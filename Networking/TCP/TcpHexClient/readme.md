@@ -29,7 +29,7 @@ Echo server is running. Press any other key to stop
 Server: Socket is listening
 ```
 
-By default it runs with port 41000, IPv4. If you have Firewall, you may be asked to enable the Firewall exception for the server program. This is not necessary for this specific local test. However, if you want to access the server from another computer, accept this suggestion.
+By default it runs with port 41000, IPv4. If you have Firewall, you may be asked to enable a Firewall exception for the server program. This is not necessary for this specific local test. However, if you want to access the server from another computer, accept this suggestion.
 Now start the client:
 
 ```
