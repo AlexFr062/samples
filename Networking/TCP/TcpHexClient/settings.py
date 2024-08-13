@@ -20,7 +20,7 @@ class Settings:
     
     _port_min = 0
     _port_max = 0xFFFF
-    _port_default = 50000
+    _port_default = 41000
     
     _ipv_min = 0
     _ipv_max = 1

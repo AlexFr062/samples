@@ -17,7 +17,7 @@ namespace EchoServer
     {
         static void Main(string[] args)
         {
-            int port = 50000;
+            int port = 41000;
             AddressFamily family = AddressFamily.InterNetwork;                // InterNetworkV6
 
             if (args.Length >= 1)
