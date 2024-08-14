@@ -8,7 +8,7 @@
 /// port - valid TCP port, maximal value in unsigned short range
 /// family - 4 or 6
 ///
-/// Default values: 50000 4
+/// Default values: 41000 4
 
 
 namespace EchoServer
