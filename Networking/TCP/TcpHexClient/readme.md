@@ -64,13 +64,13 @@ Run TCP client as in the previous test, select localhost, 41000, IPv6, Connect. 
 
 ## Testing on two computers
 
-Let's say we have two Windows computers, connected with Ethernet cable.
+Let's say we have two Windows computers, connected with an Ethernet cable.
 
 Computer A: IPv4 192.168.0.1, mask 255.255.0.0. IPv6 fc00::1, subnet prefix length 64.
 
 Computer B: IPv4 192.168.0.3, mask 255.255.0.0. IPv6 fc00::3, subnet prefix length 64.
 
-On both computers we clone this repository to `C:\tmp\samples` directory. We will use computer A to run Python client, and B to run C# TCP server. Open TCP Echo Server in Visual Studio 2022 and build it in Any CPU Release configuration.
+On both computers we clone this repository to `C:\tmp\samples` directory. We will use computer A to run Python client, and B to run C# TCP server. Open TCP Echo Server solution in Visual Studio 2022 and build it in Any CPU Release configuration.
 
 ### IPv4
 

@@ -1,16 +1,11 @@
 # Code samples
 
 
-### TCP server
-[Project](Networking/TCP/TcpServer/)  
-
-[doc](Networking/TCP/TcpServer/readme.md)
+### [TCP server](Networking/TCP/TcpServer/)  
 
 
-### TCP client
-[Project](Networking/TCP/TcpHexClient/)  
+### [TCP client](Networking/TCP/TcpHexClient/)  
 
-[doc](Networking/TCP/TcpHexClient/readme.md)
 
 
 
