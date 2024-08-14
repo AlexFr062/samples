@@ -1,7 +1,7 @@
 # TCP client
 
 - TCP
-- TCP Server
+- TCP Client
 - IPv4
 - IPv6
 - Python
