@@ -7,6 +7,8 @@
 - .NET
 - C#
 - Visual Studio 2022
+- Windows
+- Linux
 
 ---
 
@@ -47,14 +49,8 @@ Open TcpServer solution in Visual Studio 2022, right-click on EchoServer project
 
 ```
 C:\tmp\TcpServer\EchoServer\bin\Release\net8.0\publish>dir
- Volume in drive C has no label.
- Volume Serial Number is 0E45-0D9C
-
- Directory of C:\tmp\TcpServer\EchoServer\bin\Release\net8.0\publish
-
-15-Aug-24  06:56 AM    <DIR>          .
-15-Aug-24  06:56 AM    <DIR>          ..
-14-Aug-24  03:06 PM               704 EchoServer.deps.json
+ 
+ 4-Aug-24  03:06 PM               704 EchoServer.deps.json
 14-Aug-24  03:06 PM             7,168 EchoServer.dll
 14-Aug-24  03:06 PM           142,848 EchoServer.exe
 14-Aug-24  03:06 PM            11,348 EchoServer.pdb
