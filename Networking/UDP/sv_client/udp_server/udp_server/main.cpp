@@ -11,6 +11,9 @@
 using namespace std;
 
 // UDP echo server.
+//
+// Command line parameters:
+// [port] [IP version: 4/6]
 
 
 std::mutex sync_mutex;          // for sync_print
@@ -59,6 +62,7 @@ int main(int argc, const char *argv[])
     UNREFERENCED_PARAMETER(argv);
 
     int port = 41000;
+    ip_version version = ip_version::v4;
 
     if (argc >= 2)
     {
@@ -66,11 +70,20 @@ int main(int argc, const char *argv[])
 
         if (n == 0 || n > numeric_limits<unsigned short>::max())
         {
-            sync_print("Using: udp_server [port]");
+            sync_print("Using: udp_server [port] [IP version: 4/6]");
+            sync_print("       default: 41000 4");
             return 1;
         }
 
         port = n;
+    }
+
+    if (argc >= 3)
+    {
+        if (strcmp(argv[2], "6") == 0)
+        {
+            version = ip_version::v6;
+        }
     }
 
 #ifdef _WIN32
@@ -88,7 +101,7 @@ int main(int argc, const char *argv[])
     try
     {
         sync_print("create_socket");
-        sv.create_socket(ip_version::v4, 9000);
+        sv.create_socket(version, 9000);
 
         sync_print("bind to port ", port);
         sv.bind(port);
@@ -103,12 +116,13 @@ int main(int argc, const char *argv[])
     }
 
 
+    sync_print("Server is running. Port ", port, (version == ip_version::v4 ? " IPv4" : " IPv6"));
 
 #if defined _WIN32 && defined USE_GETCH
-    sync_print("Server is running. Press any key to exit");
+    sync_print("Press any key to exit");
     _getch();
 #else
-    sync_print("Server is running. Enter any string to exit");
+    sync_print("Enter any string to exit");
     string s;
     cin >> s;
 #endif

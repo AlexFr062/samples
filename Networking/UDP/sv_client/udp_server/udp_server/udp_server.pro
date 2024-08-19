@@ -18,8 +18,7 @@ SOURCES += \
     $${COMMON_DIR}udp_socket.cpp \
     $${COMMON_DIR}udp_socket_impl_l.cpp \
     $${COMMON_DIR}udp_socket_impl_w.cpp \
-    $${COMMON_DIR}utilities.cpp \
-    $${COMMON_DIR}wsa_error.cpp
+    $${COMMON_DIR}utilities.cpp
 
 HEADERS += \
     $${COMMON_DIR}sync_print.h \
@@ -31,8 +30,7 @@ HEADERS += \
     $${COMMON_DIR}udp_socket.h \
     $${COMMON_DIR}udp_socket_impl_l.h \
     $${COMMON_DIR}udp_socket_impl_w.h \
-    $${COMMON_DIR}utilities.h \
-    $${COMMON_DIR}wsa_error.h
+    $${COMMON_DIR}utilities.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
