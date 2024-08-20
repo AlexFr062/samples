@@ -18,3 +18,6 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
+
+
+std::mutex sync_mutex;    // sir sync_print

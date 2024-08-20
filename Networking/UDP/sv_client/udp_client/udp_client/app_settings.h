@@ -22,7 +22,7 @@ static const char* IpAddressDefault = "";
 static const char* DataDefault = "";
 
 const int PortMin = 0;
-const int PortDefault = 50000;
+const int PortDefault = 41000;
 const int PortMax = std::numeric_limits<unsigned short>::max();
 
 const ip_version IpVersionDefault = ip_version::v4;

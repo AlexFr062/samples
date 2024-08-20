@@ -137,6 +137,10 @@ bool socket_utilities::resolve_host(
 // When called with ip_version::v6, fills address vector with sockaddr_in6 structures.
 //
 // On error: fills error parameter with error message and returns false.
+//
+// Note: From some reason. this function fails on my Ubuntu 22.04
+// for IPv6, localhost. But works for ::1.
+//
 bool socket_utilities::resolve_host(
     ip_version version,                         // [in] IP version
     const char* dnsName,                        // [in] DNS name to resolve
