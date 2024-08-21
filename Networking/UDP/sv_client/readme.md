@@ -16,9 +16,9 @@ After TCP, UDP may look somewhat embarassing. UDP socket allows to do absolutely
 
 > There is only one rule: there are no rules.
 
-Any UDP socket can send a datagram to any other UDP socket, providing that destination IP address and port are known. UDP socket can receive a datagram from any other UDP socket, providing that sender knows the destination IP address and port. This is, basically, UDP "No rules" rule. Here we are talking only about unicast. UDP broadcasting is not covered in this sample.
+UDP socket can send a datagram to any other UDP socket, providing that destination IP address and port are known. UDP socket can receive a datagram from any other UDP socket, providing that sender knows the destination IP address and port. This is, basically, UDP "No rules" rule. Here we are talking only about unicast. UDP broadcasting is not covered in this sample.
 
-Trying to design some minimal application scenario, I need to define some additional rules. So, once UDP socket is created, it needs to send some message to another socket. What is destination IP ad port? Let's define our socket as client, and destination socket as server.
+Trying to design some minimal application scenario, I need to define some additional rules. So, once UDP socket is created, it needs to send a messages to another socket. What is destination IP and port? Let's define our socket as client, and destination socket as server.
 
 ### UDP server
 
@@ -28,7 +28,7 @@ Remember "No rules" rule? UDP server can perfectly run on ephemeral port, withou
 
 ### UDP client
 
-UDP client runs on ephemeral port, this means, it gets free port number from OS every time, when socket is created. To talki with some UDP server, client needs to know the server IP address and port.
+UDP client runs on ephemeral port, this means, it gets a free port number from OS every time, when socket is created. To talk with some UDP server, client needs to know the server IP address and port.
 
 UDP client calls `connect` function with destination address as parameter. UDP `connect` does not create any connection (UDP protocol is connectionless), but it allows to optimize the subsequent `recv` and `send` functions. Finally, client uses `send` to send a datagram to the server, and `recv` to receive server reply.
 
@@ -55,7 +55,7 @@ Server:
 
 ### Implementation
 
-Internally, `udp_socket` creates `udp_socket_impl` instance, which has platform-specific implementations. In Windows it is implemented, using Winsock linrary, in Linux - using Linux sockets.
+Internally, `udp_socket` creates `udp_socket_impl` instance, which has platform-specific implementations. In Windows it is implemented using Winsock linrary, in Linux - using Linux sockets.
 
 ### UDP client project
 
@@ -67,7 +67,7 @@ Project is built using Qt Creator. This is command-line application, it doesn't 
 
 `class echo_server : public udp_socket` overrides `data_received` method, sending the same data back to client, so this program works as UDP echo server.
 
-Both project are working in Windows and Linux OS.
+Both projects are working in Windows and Linux OS.
 
 ## Testing
 
