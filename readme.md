@@ -3,10 +3,12 @@
 
 ### [TCP server](Networking/TCP/TcpServer/)  
 
-
 ### [TCP client](Networking/TCP/TcpHexClient/) 
 
-### [UDP client and server](Networking/UDP/sv_client) 
+### [UDP client and server (C++, Windows + Linux](Networking/UDP/sv_client) 
+
+### [UDP server (C, Linux)](Networking/UDP/sv_client) 
+
 
 
 
