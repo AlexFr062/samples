@@ -7,7 +7,7 @@
 
 ### [UDP client and server (C++, Windows + Linux](Networking/UDP/sv_client) 
 
-### [UDP server (C, Linux)](Networking/UDP/sv_client) 
+### [UDP server (C, Linux)](Networking/UDP/udp_echo_server) 
 
 
 
