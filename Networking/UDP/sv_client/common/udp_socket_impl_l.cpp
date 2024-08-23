@@ -435,8 +435,6 @@ void udp_socket_impl::server_fn()
 
     receive_buffer.resize(max_packet_length);
 
-    receive_buffer.resize(max_packet_length);
-
     // Create epoll for monitoring 2 events
 
     debug_print("create epoll");
