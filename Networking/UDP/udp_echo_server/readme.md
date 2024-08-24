@@ -235,7 +235,7 @@ At this point, we can run our `udp_client` and use `192.168.6.2` IP address. But
 
 Public BBW interface is WiFi. By default, it's name is `BeagleBone-363F`, password BeagleBone, IP address 192.168.8.1.
 
-It is possiblt to connect to BBW WiFi from any computer. My Windows 11 laptop looks good for this task. When placed close to BBW, I can see `BeagleBone-363F` in the list of available WiFi connections. Select it, Enter BeagleBone password. Once this is done, check connection:
+It is possible to connect to BBW WiFi from any computer. My Windows 11 laptop looks good for this task. When placed close to BBW, I can see `BeagleBone-363F` in the list of available WiFi connections. Select it, Enter BeagleBone password. Once this is done, check connection:
 
 ```
 C:\Windows\System32>ping 192.168.8.1
