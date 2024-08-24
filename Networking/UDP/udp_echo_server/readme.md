@@ -8,6 +8,8 @@
 - Linux
 - Embedded Linux
 - Raspberry Pi
+- BeagleBone
+- WiFi
 
 ## udp_echo_server program
 
@@ -162,4 +164,99 @@ alex@u23:/home/alex/tmp/samples/Networking/UDP/udp_echo_server$ file udp_echo_se
 udp_echo_server: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV)
 ```
 
-Then we can copy `udp_echo_server` executable to the board with `scp` command, and execute it there.
+Then we can copy `udp_echo_server` executable to the board with `scp` command, and execute it there there.
+
+## Communication over WiFi with BeagleBone Black Wireless
+
+Let's place our program to BBW, and talk with our server, using WiFi connection.
+
+When BBW is connected to the Linux PC using USB, Ethernet over USB connection is available. It is used for development, PC address is 192.168.1.1, board address is 192.168.1.2. 
+
+```
+alex@u23:~$ ping 192.168.6.2
+PING 192.168.6.2 (192.168.6.2) 56(84) bytes of data.
+64 bytes from 192.168.6.2: icmp_seq=1 ttl=64 time=0.487 ms
+64 bytes from 192.168.6.2: icmp_seq=2 ttl=64 time=0.385 ms
+64 bytes from 192.168.6.2: icmp_seq=3 ttl=64 time=0.380 ms
+```
+
+By default, user name is debian, password temppwd. So, we can copy our program to the board:
+
+```
+alex@u23:~/tmp/samples/Networking/UDP/udp_echo_server$ scp udp_echo_server.c debian@192.168.6.2:/home/debian
+Debian GNU/Linux 10
+
+BeagleBoard.org Debian Buster IoT Image 2020-04-06
+
+Support: http://elinux.org/Beagleboard:BeagleBoneBlack_Debian
+
+default username:password is [debian:temppwd]
+
+debian@192.168.6.2's password: temppwd
+udp_echo_server.c       
+```
+
+Login to BBW, compile and run our program:
+
+```
+alex@u23:~$ ssh debian@192.168.6.2
+The authenticity of host '192.168.6.2 (192.168.6.2)' can't be established.
+ED25519 key fingerprint is SHA256:7I1VDSQJpGA20QBbo5WKnUNhH0Ki3n7l8QmNj1HAnL0.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.6.2' (ED25519) to the list of known hosts.
+Debian GNU/Linux 10
+
+BeagleBoard.org Debian Buster IoT Image 2020-04-06
+
+Support: http://elinux.org/Beagleboard:BeagleBoneBlack_Debian
+
+default username:password is [debian:temppwd]
+
+debian@192.168.6.2's password: temppwd
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Wed May 11 04:29:46 2022 from 192.168.6.1
+
+debian@beaglebone:~$ gcc udp_echo_server.c -o udp_echo_server
+debian@beaglebone:~$ ./udp_echo_server 
+UDP echo server started
+port 41000 IPv4
+socket is created
+bound to port 41000
+```
+
+At this point, we can run our `udp_client` and use `192.168.6.2` IP address. But this is not interesting, since this connection is used only for development.
+
+Public BBW interface is WiFi. By default, it's name is `BeagleBone-363F`, password BeagleBone, IP address 192.168.8.1.
+
+It is possiblt to connect to BBW WiFi from any computer. My Windows 11 laptop looks good for this task. When placed close to BBW, I can see `BeagleBone-363F` in the list of available WiFi connections. Select it, Enter BeagleBone password. Once this is done, check connection:
+
+```
+C:\Windows\System32>ping 192.168.8.1
+
+Pinging 192.168.8.1 with 32 bytes of data:
+Reply from 192.168.8.1: bytes=32 time=37ms TTL=64
+Reply from 192.168.8.1: bytes=32 time=3ms TTL=64
+Reply from 192.168.8.1: bytes=32 time=3ms TTL=64
+Reply from 192.168.8.1: bytes=32 time=3ms TTL=64
+
+Ping statistics for 192.168.8.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 3ms, Maximum = 37ms, Average = 11ms
+```
+
+On the laptop, assuming that `samples` repository is cloned to `C:\tmp\samples`, open project `C:\tmp\samples\Networking\UDP\sv_client\udp_client\udp_client\udp_client.pro` in Qt Creator. Build and run it:
+
+![UDP client](../../../images/udp_cl_bbw.png)
+
+
+
+
+
