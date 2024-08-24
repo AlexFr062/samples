@@ -5,9 +5,9 @@
 
 ### [TCP client](Networking/TCP/TcpHexClient/) 
 
-### [UDP client and server (C++, Windows + Linux](Networking/UDP/sv_client) 
+### [UDP client and server (C++, Windows + Linux)](Networking/UDP/sv_client) 
 
-### [UDP server (C, Linux)](Networking/UDP/udp_echo_server) 
+### [UDP server (C, Linux, Embedded)](Networking/UDP/udp_echo_server) 
 
 
 
