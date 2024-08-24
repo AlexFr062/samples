@@ -11,7 +11,15 @@
 - BeagleBone
 - WiFi
 
-## udp_echo_server program
+---
+
+- [udp_echo_server program](#up)
+- [Testing on Desktop Linux computer](#td)
+- [Prepare Raspberry Pi board for testing](#rpi)
+
+---
+
+## udp_echo_server program {#up}
 
 This program works like [C++ UDP echo server](../sv_client/udp_server), with some differences:
 
@@ -23,7 +31,7 @@ This program works like [C++ UDP echo server](../sv_client/udp_server), with som
 - This directory doesn't contain any IDE project or makefile, we will build the program from command line.
 - Otherwise, it works exactly like C++ UDP echo server, see [documentation](../sv_client/readme.md).
 
-## Testing on Desktop Linux computer
+## Testing on Desktop Linux computer {#td}
 
 Since the program doesn't contain any embedded or board-specific code, we can test it first on PC computer. In my case, this is Ubuntu 22.04 x64.
 We assume that `samples` repository is cloned to `~/tmp` directory.
@@ -62,7 +70,7 @@ Run `udp_client`:
 ![UDP client](../../../images/udp_cl_linux_local_6.png)
 
 
-## Prepare Raspberry Pi board for testing
+## Prepare Raspberry Pi board for testing {#rpi}
 
 This description is board-specific: I am using Raspberry Pi 4 Model B. Generally, any Embedded Linux board with Ethernet connector is OK for this test.
 
