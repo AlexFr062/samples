@@ -55,7 +55,7 @@ Server:
 
 ### Implementation
 
-Internally, `udp_socket` creates `udp_socket_impl` instance, which has platform-specific implementations. In Windows it is implemented using Winsock linrary, in Linux - using Linux sockets.
+Internally, `udp_socket` creates `udp_socket_impl` instance, which has platform-specific implementations. In Windows it is implemented using Winsock library, in Linux - using Linux sockets.
 
 ### UDP client project
 

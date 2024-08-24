@@ -21,13 +21,13 @@ void fatal_error(const char* message);
 int main(int argc, const char *argv[])
 {
 #ifdef DEBUG
-	printf("UDP echo server started (Debug)\n");
+    printf("UDP echo server started (Debug)\n");
 #else
-	printf("UDP echo server started\n");
+    printf("UDP echo server started\n");
 #endif
 
-	int socket_type = AF_INET;
-	int port = 41000;
+    int socket_type = AF_INET;
+    int port = 41000;
 
     if (argc >= 2)
     {
@@ -47,25 +47,25 @@ int main(int argc, const char *argv[])
     {
         if (strcmp(argv[2], "6") == 0)
         {
-        	socket_type = AF_INET6;
+            socket_type = AF_INET6;
         }
     }
 
     run(socket_type, port);
 
-	return 0;
+    return 0;
 }
 
 void fatal_error_errno(const char* function)
 {
-	printf("%s failed. %s\n", function, strerror(errno));
-	exit(1);
+    printf("%s failed. %s\n", function, strerror(errno));
+    exit(1);
 }
 
 void fatal_error(const char* message)
 {
-	printf("%s\n", message);
-	exit(1);
+    printf("%s\n", message);
+    exit(1);
 }
 
 void run(int socket_type, int port)
@@ -77,7 +77,7 @@ void run(int socket_type, int port)
 
     if (sc < 0)
     {
-    	fatal_error_errno("socket");
+        fatal_error_errno("socket");
     }
 
     printf("socket is created\n");
@@ -86,7 +86,7 @@ void run(int socket_type, int port)
 
     if (socket_type == AF_INET)
     {
-    	struct sockaddr_in addr = {0};
+        struct sockaddr_in addr = {0};
 
         addr.sin_family = AF_INET;
         addr.sin_port = htons((uint16_t)port);
@@ -99,7 +99,7 @@ void run(int socket_type, int port)
     }
     else
     {
-     	struct sockaddr_in6 addr = {0};
+         struct sockaddr_in6 addr = {0};
 
         addr.sin6_family = AF_INET6;
         addr.sin6_port = htons((uint16_t)port);
@@ -107,15 +107,15 @@ void run(int socket_type, int port)
 
         bind_result = bind(
             sc,                                     // [in] socket
-	        (struct sockaddr*)(&addr),     			// [in] Address to bind
+            (struct sockaddr*)(&addr),                 // [in] Address to bind
             sizeof(addr));                          // [in] The length, in bytes, of the value pointed to previous parameter.
-	}
+    }
 
     // bind: on success, zero is returned.  On error, -1 is returned, and errno is set to indicate the error.
 
     if (bind_result < 0)
     {
-    	fatal_error_errno("bind");
+        fatal_error_errno("bind");
     }
 
     printf("bound to port %d\n", port);
@@ -124,7 +124,7 @@ void run(int socket_type, int port)
 
     if (buffer == NULL)
     {
-    	fatal_error("malloc failed");
+        fatal_error("malloc failed");
     }
 
     int recv_result;
@@ -133,22 +133,22 @@ void run(int socket_type, int port)
 
     for(;;)
     {
-    	socklen_t address_size = sizeof(recv_address);
+        socklen_t address_size = sizeof(recv_address);
 
-    	// Returns the number of bytes received, or -1 if an error occurred.
-    	// In the event of an error, errno is set to indicate the error.
+        // Returns the number of bytes received, or -1 if an error occurred.
+        // In the event of an error, errno is set to indicate the error.
 
-    	recv_result = recvfrom(
-    		sc,                                             // [in] descriptor identifying a bound socket.
-			buffer, 										// [out] Buffer for the incoming data
-			max_len,                              			// [in] Length of buffer, in bytes
-			0,                                              // [in] flags
-			(struct sockaddr*)(&recv_address), 				// [out] sender address
-			&address_size);									// [in, out]
+        recv_result = recvfrom(
+            sc,                                             // [in] descriptor identifying a bound socket.
+            buffer,                                         // [out] Buffer for the incoming data
+            max_len,                                          // [in] Length of buffer, in bytes
+            0,                                              // [in] flags
+            (struct sockaddr*)(&recv_address),                 // [out] sender address
+            &address_size);                                    // [in, out]
 
         if (bind_result < 0)
         {
-        	fatal_error_errno("bind");
+            fatal_error_errno("bind");
         }
 
 #ifdef DEBUG
@@ -159,16 +159,16 @@ void run(int socket_type, int port)
         // On error, -1 is returned, and errno is set to indicate the error.
 
         ssize_t send_result = sendto(
-        	sc,
-			buffer,
-			recv_result,
-			0,
-			(struct sockaddr*)(&recv_address),
-			address_size);
+            sc,
+            buffer,
+            recv_result,
+            0,
+            (struct sockaddr*)(&recv_address),
+            address_size);
 
         if (send_result < 0)
         {
-        	fatal_error_errno("sendto");
+            fatal_error_errno("sendto");
         }
     }
 }

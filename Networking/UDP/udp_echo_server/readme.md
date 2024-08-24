@@ -17,7 +17,7 @@ This program works like [C++ UDP echo server](../sv_client/udp_server), with som
 - Program is not cross-platform, runs only on Linux (including Embedded).
 - Contains only minimal necessary code.
 - Critical errors are reported and `exit` is called (no clean exit).
-- Finished with endless loop waiting for incoming messages, to stop it in the terminal window `Ctrl+C` is used.
+- Finished with an endless loop waiting for incoming messages, to stop it in the terminal window `Ctrl+C` is used.
 - This directory doesn't contain any IDE project or makefile, we will build the program from command line.
 - Otherwise, it works exactly like C++ UDP echo server, see [documentation](../sv_client/readme.md).
 
@@ -86,6 +86,7 @@ alex@u23:~$ ping 192.168.3.14
 PING 192.168.3.14 (192.168.3.14) 56(84) bytes of data.
 64 bytes from 192.168.3.14: icmp_seq=1 ttl=64 time=0.348 ms
 64 bytes from 192.168.3.14: icmp_seq=2 ttl=64 time=0.212 ms
+alex@u23:~$ ping fc00::2
 PING fc00::2(fc00::2) 56 data bytes
 64 bytes from fc00::2: icmp_seq=1 ttl=64 time=0.496 ms
 64 bytes from fc00::2: icmp_seq=2 ttl=64 time=0.217 ms
@@ -148,3 +149,17 @@ Run `udp_client`:
 
 ![UDP client](../../../images/udp_cl_linux_rpi_6.png)
 
+
+## Cross-compilation
+
+Building a program directly on embedded board is not a good idea. Better build our program on PC and then deploy it to the board.
+
+Installing correct cross-compiler may be quite complicated, I am not going to explain this topic here. Finally, having `arm-linux-gnueabihf-gcc` cross-compiler on the PC, we can build the program:
+
+```
+alex@u23:/home/alex/tmp/samples/Networking/UDP/udp_echo_server$ arm-linux-gnueabihf-gcc udp_echo_server.c -o udp_echo_server
+alex@u23:/home/alex/tmp/samples/Networking/UDP/udp_echo_server$ file udp_echo_server
+udp_echo_server: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV)
+```
+
+Then we can copy `udp_echo_server` executable to the board with `scp` command, and execute it there there.
