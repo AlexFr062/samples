@@ -162,4 +162,4 @@ alex@u23:/home/alex/tmp/samples/Networking/UDP/udp_echo_server$ file udp_echo_se
 udp_echo_server: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV)
 ```
 
-Then we can copy `udp_echo_server` executable to the board with `scp` command, and execute it there there.
+Then we can copy `udp_echo_server` executable to the board with `scp` command, and execute it there.
