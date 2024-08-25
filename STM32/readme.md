@@ -150,17 +150,40 @@ In this initial state project is copied to [diff/1.new_project](diff/1.new_proje
 
 ![Device configuration](../images/device_config.png)
 
-The left configuration pave contains the list of devices and software packages. Select required element and then configure it in the right pane.
+The left configuration pane contains the list of devices and software packages. Select required element and then configure it in the right pane.
+
+---
+
+Tip. 
+At any time during device configuration, STM32CubeIDE may complain about clock issues. In this case select Clock Configuration, Automatic clock issues solver.
+
+---
 
 ### UART for tracing
 
-USART3, Mode Asynchronous, Flow control disabled, Baud rate 115200, Wordl length 8, Parity None, Stop bits 1.
+Select USART3, set the following parameters: Mode Asynchronous, Flow control disabled, Baud rate 115200, Wordl length 8, Parity None, Stop bits 1.
 
-USART3 in NUCLEO-F429ZI is connected to Serial-over-USB port. Connect the board to PC with USB cable. Required STM32 drivers should be already installed, this is done by STM32CubeIDE installation. installed Open PC Device manager:
+USART3 in NUCLEO-F429ZI is connected to Serial-over-USB port. On another board, UART port may be different - see specific board documentation. Connect the board to PC with USB cable. Required STM32 drivers should be already installed, this is done by STM32CubeIDE installation. Open PC Device manager:
 
 ![Device manager](../images/com_port.png)
 
-We can view COM4 (name may be different), using any serial port 
+We can view COM4 (name may be different), using any serial port terminal. For example, Serial Monitor extension in Visual Studio Code. Once installed, select Terminal - New Terminal - Serial Monitor. Set required serial port parameters, as in STM32 project, and click Start Monitoring:
 
+![Device manager](../images/serial_monitor.png)
+
+Later in this article, this monitor window is mentioned as **Serial Log**. Our program will use `printf` to print information to the Serial Log.
+
+### Ethernet
+
+ETH. Mode: RMII
+
+### FreeRTOS
+
+CMSIS_V2. Config parameters, USE_PREEMPTION: Enabled.
+
+Tasks and queues: defaultTask and serverTask. 
+
+![Default task](../images/default_task.png) 
+![Server task](../images/server_task.png)
 
 
