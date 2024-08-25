@@ -18,9 +18,9 @@ The code in this repository is based on `LwIP_HTTP_Server_Netconn_RTOS` code exa
 and other STM32 examples.
 
 Working environment:
-- Windows 11
-- STM32CubeIDE version 1.16.0
-- Firmware package 1.28.0, see local directory `C:\Users\User\STM32Cube\Repository`
+- Windows 11.
+- STM32CubeIDE version 1.16.0.
+- Firmware package 1.28.0.
 
 ## Software installation
 
@@ -35,13 +35,23 @@ There are 3 projects in the `samples/STM32` directory: the same project on diffe
 - [diff/2.cubemx/](diff/2.cubemx/) - device configuration finished.
 - [stm_sample](stm_sample/) - code is added, final state.
 
-You only need to open `stm_sample` project in STM32CubeIDE. `diff` is used to follow the changes, done on evelopment steps. For example, difference between [stm_sample](stm_sample/) and [2.cubemx/](diff/diff/2.cubemx/) gives the code, added to project manually.
+You only need to open `stm_sample` project in STM32CubeIDE. `diff` is used to follow the changes, done on different development steps. For example, difference between [stm_sample](stm_sample/) and [2.cubemx/](diff/diff/2.cubemx/) gives the code, added to project manually.
 
-Every STM32 project contains only minimal set of files. Missing friles are created by STM32CubeMX tool:
+Every STM32 project contains only minimal set of files. Missing files can be created by STM32CubeMX tool:
 - Open [stm_sample](stm_sample/) directory in STM32CubeIDE: File - Import - General - Existing project into workspace.
-- Double-click `.ioc` file in the Project Explorer and execute Project - Generate code.
+- Open `.ioc` file in the Project Explorer and execute Project - Generate code.
 
-You can use [stm_sample](stm_sample/) directly, only if you have NUCLEO-F429ZI. For any other board, create a new project and follow the instructions below.
+You can use [stm_sample](stm_sample/) directly, only if you have NUCLEO-F429ZI. 
+
+---
+
+Tip for new Eclipse users:
+To open an existing STM32 project in STM32CubeIDE:
+- File - Import - General - Existing project into workspace.
+- Select required project directory.
+---
+
+For any other board, create a new project and follow the instructions below.
 
 ## Creating a new STM32 project
 
@@ -132,26 +142,25 @@ Shutting down...
 Exit.
 ```
 
-In this initial state project is copied to [diff/1.new_project](diff/1.new_project/) directory. `diff` directory can be used to compare the state of the project on different development stages. So, `diff\1.new_project` is "Just created, do-nothing" stage. 
+In this initial state project is copied to [diff/1.new_project](diff/1.new_project/) directory. `diff` directory can be used to compare the state of the project on different development stages. So, `diff/1.new_project` is "Just created, do-nothing" stage. 
 
-As all other STM32 directories in this repository, `1.new_project` contains only minimal set of files. Missing files can be recreaed by STM32CubeIDE:
-- Open existing project in STM32CubeIDE.
-- Double-click `.ioc` file.
-- Execute Project - Generate code.
----
 
-Tip for new Eclipse users:
-To open an existing STM32 project in STM32CubeIDE:
-- File - Import - General - Existing project into workspace.
-- Select required project directory.
----
-
-Now that backup copy is created, we need to configure the project in Device Configuration tool.
 
 ## Device Configuration
 
+![Device configuration](../images/device_config.png)
 
+The left configuration pave contains the list of devices and software packages. Select required element and then configure it in the right pane.
 
+### UART for tracing
+
+USART3, Mode Asynchronous, Flow control disabled, Baud rate 115200, Wordl length 8, Parity None, Stop bits 1.
+
+USART3 in NUCLEO-F429ZI is connected to Serial-over-USB port. Connect the board to PC with USB cable. Required STM32 drivers should be already installed, this is done by STM32CubeIDE installation. installed Open PC Device manager:
+
+![Device manager](../images/com_port.png)
+
+We can view COM4 (name may be different), using any serial port 
 
 
 
