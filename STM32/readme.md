@@ -205,7 +205,7 @@ Ethernet global interrupt: Enabled, Priority 6.
 
 ## Testing device configuration
 
-Device configuration finished. Save `.ioc` file, generate the code. Build and run the project.
+Device configuration finished. Save `.ioc` file, generate code. Build and run the project.
 
 Connect the board and PC with Ethernet cable. Set PC static IP address `192.168.0.1`, subnet mask 255.255.255.0. Test connection:
 
@@ -244,6 +244,6 @@ This Device Configuration finished state is kept in [diff/2.cubemx/](diff/2.cube
 
 ## Coding
 
-Time for programming. Compare [diff/2.cubemx/](diff/2.cubemx/) and [stm_sample](stm_sample/) directories. The differene is the code that we need to add now to our project.
+Time for programming. Compare [diff/2.cubemx/](diff/2.cubemx/) and [stm_sample](stm_sample/) directories. The difference is the code that we need to add now to our project.
 
 
