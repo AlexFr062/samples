@@ -30,28 +30,26 @@ When STM32CubeIDE is executed first time, login to your STM32 account. Otherwise
 
 ## STM32 projects in the samples repository
 
-There are 3 projects in the `samples/STM32` directory: the same project on different development stages.
+Having NUCLEO-F429ZI evaluation board, it is poissible to use [stm_sample](stm_sample/) project directly:
+- Start STN\M32CubeIDE. File - Import - General - Existing project into workspace. Select `stm_sample` directory.
+- Open Device Configuration tool: `stm_sample.ioc`.
+- Execute command Project - Generate code. Only minimal set of files is kept in the repository. Missing files are created during code generation.
+- Build and run the project.
+- Test it it using [TCP client](../Networking/TCP/TcpHexClient/).
+
+For any other STM32 board it is necessary to create a new project, make device configuration and add the code. There is no binary compatibility between different boards.
+
+[diff](./diff/) directory contains the same project on different development stages:
+
 - [diff/1.new_project](diff/1.new_project/) - just created by STM32CubeIDE Wizard.
 - [diff/2.cubemx/](diff/2.cubemx/) - device configuration finished.
-- [stm_sample](stm_sample/) - code is added, final state.
 
-You only need to open `stm_sample` project in STM32CubeIDE. `diff` is used to follow the changes, done on different development steps. For example, difference between [stm_sample](stm_sample/) and [2.cubemx/](diff/diff/2.cubemx/) gives the code, added to project manually.
+Build these two projects exactly by the same way, as `stm_sample`. Now it is possible to compare these directories and view the changes:
+- Difference between [diff/1.new_project](diff/1.new_project/) and [diff/2.cubemx/](diff/2.cubemx/) is device configuration.
+- Difference between  [diff/2.cubemx/](diff/2.cubemx/) and [stm_sample](stm_sample/) is application code.
 
-Every STM32 project contains only minimal set of files. Missing files can be created by STM32CubeMX tool:
-- Open [stm_sample](stm_sample/) directory in STM32CubeIDE: File - Import - General - Existing project into workspace.
-- Open `.ioc` file in the Project Explorer and execute Project - Generate code.
+Viewing the difference can help you to create your own project. Device configuration and coding may be different for another board, use destination board documentation and code examples, if something goes wrong.
 
-You can use [stm_sample](stm_sample/) directly, only if you have NUCLEO-F429ZI. 
-
----
-
-Tip for new Eclipse users:
-To open an existing STM32 project in STM32CubeIDE:
-- File - Import - General - Existing project into workspace.
-- Select required project directory.
----
-
-For any other board, create a new project and follow the instructions below.
 
 ## Creating a new STM32 project
 
@@ -142,8 +140,7 @@ Shutting down...
 Exit.
 ```
 
-In this initial state project is copied to [diff/1.new_project](diff/1.new_project/) directory. `diff` directory can be used to compare the state of the project on different development stages. So, `diff/1.new_project` is "Just created, do-nothing" stage. 
-
+This initial state is kept in [diff/1.new_project](diff/1.new_project/) directory. 
 
 
 ## Device Configuration
@@ -161,7 +158,9 @@ At any time during device configuration, STM32CubeIDE may complain about clock i
 
 ### UART for tracing
 
-Select USART3, set the following parameters: Mode Asynchronous, Flow control disabled, Baud rate 115200, Wordl length 8, Parity None, Stop bits 1.
+Select USART3, set the following parameters: Mode Asynchronous, Flow control disabled, Baud rate 115200, Word length 8, Parity None, Stop bits 1.
+
+---
 
 USART3 in NUCLEO-F429ZI is connected to Serial-over-USB port. On another board, UART port may be different - see specific board documentation. Connect the board to PC with USB cable. Required STM32 drivers should be already installed, this is done by STM32CubeIDE installation. Open PC Device manager:
 
@@ -171,19 +170,80 @@ We can view COM4 (name may be different), using any serial port terminal. For ex
 
 ![Device manager](../images/serial_monitor.png)
 
-Later in this article, this monitor window is mentioned as **Serial Log**. Our program will use `printf` to print information to the Serial Log.
+Later in this document, this monitor window is mentioned as **Serial Log**. Our program will use `printf` to print information to the Serial Log. For now, this window is empty.
+
+---
 
 ### Ethernet
 
-ETH. Mode: RMII
+ETH. Mode: RMII.
+
+### SYS
+
+Timebase source: TIM1
 
 ### FreeRTOS
 
 CMSIS_V2. Config parameters, USE_PREEMPTION: Enabled.
 
+Advanced settings. USE_NEWLIB_REENTRANT Enabled.
+
 Tasks and queues: defaultTask and serverTask. 
 
 ![Default task](../images/default_task.png) 
 ![Server task](../images/server_task.png)
+
+### LWIP
+
+Enabled. 
+- General settings. DHCP: Disabled. IP address: `192.168.0.10`, Subnet mask `255.255.255.0`.
+- Platform settings, Driver_PHY: LAN8742.
+
+### NVIC
+   
+Ethernet global interrupt: Enabled, Priority 6.
+
+## Testing device configuration
+
+Device configuration finished. Save `.ioc` file, generate the code. Build and run the project.
+
+Connect the board and PC with Ethernet cable. Set PC static IP address `192.168.0.1`, subnet mask 255.255.255.0. Test connection:
+
+```
+C:\WINDOWS\system32>ping -t 192.168.0.32
+
+Pinging 192.168.0.32 with 32 bytes of data:
+Reply from 192.168.0.32: bytes=32 time<1ms TTL=255
+...
+```
+
+Leave it for at least several minutes - ping must work without errors, 0% loss. If ping doesn't work, there is no point to continue. The problem must be solved now.
+
+Maybe this is old STM bug, which is fixed by changing an optimization level from `-O0` to `-Og`:
+
+![Optimization](../images/optimization.png) 
+
+Still not working? Compare [diff/2.cubemx/](diff/2.cubemx/) directory (device configuration finished) with [diff/1.new_project](diff/1.new_project/) directory. You can see all the changes in `stm_sample.ioc` file. Review them, maybe device configuration is incorrect.
+
+Try to debug the project. The most interesting place for debugging is `MX_LWIP_Init` function. In the end of this function, check this condition: 
+
+```
+if ( gnetif.flags & NETIF_FLAG_UP )
+{
+  // LWIP initialization succeeded
+}
+else
+{
+  // LWIP initialization failed
+}
+```
+
+Once ping is working, we can continue.
+
+This Device Configuration finished state is kept in [diff/2.cubemx/](diff/2.cubemx/) directory.
+
+## Coding
+
+Time for programming. Compare [diff/2.cubemx/](diff/2.cubemx/) and [stm_sample](stm_sample/) directories. The differene is the code that we need to add now to our project.
 
 
