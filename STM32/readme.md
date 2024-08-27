@@ -246,4 +246,89 @@ This Device Configuration finished state is kept in [diff/2.cubemx](diff/2.cubem
 
 Time for programming. Compare [diff/2.cubemx](diff/2.cubemx/) and [stm_sample](stm_sample/) directories. The difference is the code that we need to add now to our project.
 
+Add file [tcpserver.cpp](stm_sample/Core/Src/tcpserver.c) to the project. Other files should be updated. For everey file, managed by CubeMX, user code must be inside special code sections:
+
+```
+/* USER CODE BEGIN section-name */
+
+// Code inside the section is preserved during CubeMX code generation.
+
+/* USER CODE END section-name */
+```
+
+Full list of files and code sections, that should be updated:
+
+```
+tcpserver.c - add this file
+
+main.h
+  USER CODE BEGIN Private defines
+
+main.cpp
+  USER CODE BEGIN Includes
+  USER CODE BEGIN PV
+  USER CODE BEGIN PFP
+  USER CODE BEGIN 0
+  USER CODE BEGIN 2
+  USER CODE BEGIN 5
+  USER CODE BEGIN StartServerTask     !
+
+lwip.c
+  USER CODE BEGIN 3
+```
+
+##Testing
+
+`stm_sample` project is configured, user code is added and compiled. NUCLEO-F429ZI or another STM32 board is connected to the PC using USB. STMicroelectroncs STLink virtual COM port is available on the PC. Serial monitor can be used to view the program log messages.
+
+`stm_sample` IP address is `192.168.0.32 / 24`. TCP port is 50000. STM board is connected to PC using Ethernet cable. PC IP address is `192.168.0.32 / 24`.
+
+Start serial monitor (see **UART for tracing** section in this document), connect to STLink COM port. Build and run `stm_sample` program.
+
+Serial log:
+
+```
+stm_sample
+built at Aug 27 2024 13:08:47
+Release configuration
+network interface is up. IP address 192.168.0.32
+tcpserver_thread started
+tcpserver_thread listening port 50000
+```
+
+Test IP connection:
+
+```
+C:\WINDOWS\system32>ping 192.168.0.32
+
+Pinging 192.168.0.32 with 32 bytes of data:
+Reply from 192.168.0.32: bytes=32 time<1ms TTL=255
+Reply from 192.168.0.32: bytes=32 time<1ms TTL=255
+Reply from 192.168.0.32: bytes=32 time<1ms TTL=255
+Reply from 192.168.0.32: bytes=32 time<1ms TTL=255
+
+Ping statistics for 192.168.0.32:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+
+To talk with `stm_sample` TCP server, we can use [TCP client](../Networking/TCP/TcpHexClient/):
+
+```
+C:\tmp\samples\Networking\TCP\TcpHexClient>python hex_client.py
+15:47:53.998: <module>: HexClient started
+15:47:54.010: _load: host "192.168.0.32" port 50000 ipv 0 data 00 01 FF
+15:47:54.011: __init__: MessageQueue created
+15:47:54.011: run: thread function started
+```
+
+Set IP address `192.168.0.32`, port 50000, IPv4, click Connect. Type any hexadecimal string and click Send, the same string should be received, since `stm_sample` is echo server:
+
+![Optimization](../images/tcp_cl_stm.png)
+
+Don't try to run several TCP clients, our server can handle only one client at the same time.
+
+Finally, less significant bit of every received byte defines the state of LED1: 0 - LED1 is off, 1 - LED1 is on. So, if the last byte of every packet is even, LED1 is off, odd - LED1 is on.
+
 

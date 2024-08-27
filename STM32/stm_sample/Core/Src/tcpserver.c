@@ -41,11 +41,6 @@
 #include "lwip/sys.h"
 #include "lwip/api.h"
 
-static GPIO_PinState pinStates[] =
-{
-	GPIO_PIN_RESET,		// off
-	GPIO_PIN_SET		// on
-};
 
 
 #if 0
@@ -127,10 +122,14 @@ void tcpserver_thread()
                             {
                                 // Bit 0 of every received byte: 0 - LED1 off, 1 - LED1 on.
                                 // Handle only the last byte, it defines the final state.
+                            	// GPIO_PIN_RESET = 0 - off
+                            	// PIO_PIN_SET = 1 - on
+
                                 HAL_GPIO_WritePin(
                             		LD1_GPIO_Port,
 									LD1_Pin,
-									pinStates[(((uint8_t*)data)[len-1]) & 1]);
+									(GPIO_PinState)((((uint8_t*)data)[len-1]) & 1)
+									);
                             }
 
                         } while (netbuf_next(buf) >= 0);
