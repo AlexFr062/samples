@@ -329,6 +329,6 @@ Set IP address `192.168.0.32`, port 50000, IPv4, click Connect. Type any hexadec
 
 Don't try to run several TCP clients, our server can handle only one client at the same time.
 
-Finally, less significant bit of every received byte defines the state of LED1: 0 - LED1 is off, 1 - LED1 is on. So, if the last byte of every packet is even, LED1 is off, odd - LED1 is on.
+Finally, less significant bit of every received byte defines the state of LED1: 0 - LED1 is off, 1 - LED1 is on. So, if the last received byte is even, LED1 is off, odd - LED1 is on.
 
 
