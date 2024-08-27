@@ -42,11 +42,11 @@ For any other STM32 board it is necessary to create a new project, make device c
 [diff](./diff/) directory contains the same project on different development stages:
 
 - [diff/1.new_project](diff/1.new_project/) - just created by STM32CubeIDE Wizard.
-- [diff/2.cubemx/](diff/2.cubemx/) - device configuration finished.
+- [diff/2.cubemx](diff/2.cubemx/) - device configuration finished.
 
 Build these two projects exactly by the same way, as `stm_sample`. Now it is possible to compare these directories and view the changes:
-- Difference between [diff/1.new_project](diff/1.new_project/) and [diff/2.cubemx/](diff/2.cubemx/) is device configuration.
-- Difference between  [diff/2.cubemx/](diff/2.cubemx/) and [stm_sample](stm_sample/) is application code.
+- Difference between [diff/1.new_project](diff/1.new_project/) and [diff/2.cubemx](diff/2.cubemx)/ is device configuration.
+- Difference between  [diff/2.cubemx](diff/2.cubemx/) and [stm_sample](stm_sample/) is application code.
 
 Viewing the difference can help you to create your own project. Device configuration and coding may be different for another board, use destination board documentation and code examples, if something goes wrong.
 
@@ -158,7 +158,7 @@ At any time during device configuration, STM32CubeIDE may complain about clock i
 
 ### UART for tracing
 
-Select USART3, set the following parameters: Mode Asynchronous, Flow control disabled, Baud rate 115200, Word length 8, Parity None, Stop bits 1.
+Select USART3, set the following parameters: Mode Asynchronous, Flow control Disabled, Baud rate 115200, Word length 8, Parity None, Stop bits 1.
 
 ---
 
@@ -197,7 +197,7 @@ Tasks and queues: defaultTask and serverTask.
 
 Enabled. 
 - General settings. DHCP: Disabled. IP address: `192.168.0.10`, Subnet mask `255.255.255.0`.
-- Platform settings, Driver_PHY: LAN8742.
+- Platform settings, Driver_PHY: LAN8742. For another board, this may be different.
 
 ### NVIC
    
@@ -223,7 +223,7 @@ Maybe this is old STM bug, which is fixed by changing an optimization level from
 
 ![Optimization](../images/optimization.png) 
 
-Still not working? Compare [diff/2.cubemx/](diff/2.cubemx/) directory (device configuration finished) with [diff/1.new_project](diff/1.new_project/) directory. You can see all the changes in `stm_sample.ioc` file. Review them, maybe device configuration is incorrect.
+Still not working? Compare [diff/2.cubemx](diff/2.cubemx/) directory (device configuration finished) with [diff/1.new_project](diff/1.new_project/) directory. You can see all the changes in `stm_sample.ioc` file. Review them, maybe device configuration is incorrect.
 
 Try to debug the project. The most interesting place for debugging is `MX_LWIP_Init` function. In the end of this function, check this condition: 
 
@@ -240,10 +240,10 @@ else
 
 Once ping is working, we can continue.
 
-This Device Configuration finished state is kept in [diff/2.cubemx/](diff/2.cubemx/) directory.
+This Device Configuration finished state is kept in [diff/2.cubemx](diff/2.cubemx/) directory.
 
 ## Coding
 
-Time for programming. Compare [diff/2.cubemx/](diff/2.cubemx/) and [stm_sample](stm_sample/) directories. The difference is the code that we need to add now to our project.
+Time for programming. Compare [diff/2.cubemx](diff/2.cubemx/) and [stm_sample](stm_sample/) directories. The difference is the code that we need to add now to our project.
 
 
