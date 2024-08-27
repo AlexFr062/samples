@@ -32,7 +32,7 @@ When STM32CubeIDE is executed first time, login to your STM32 account. Otherwise
 
 Having NUCLEO-F429ZI evaluation board, it is poissible to use [stm_sample](stm_sample/) project directly:
 - Start STN\M32CubeIDE. File - Import - General - Existing project into workspace. Select `stm_sample` directory.
-- Open Device Configuration tool: `stm_sample.ioc`.
+- Open Device Configuration tool: double-click `stm_sample.ioc`.
 - Execute command Project - Generate code. Only minimal set of files is kept in the repository. Missing files are created during code generation.
 - Build and run the project.
 - Test it it using [TCP client](../Networking/TCP/TcpHexClient/).
@@ -44,7 +44,7 @@ For any other STM32 board it is necessary to create a new project, make device c
 - [diff/1.new_project](diff/1.new_project/) - just created by STM32CubeIDE Wizard.
 - [diff/2.cubemx](diff/2.cubemx/) - device configuration finished.
 
-Build these two projects exactly by the same way, as `stm_sample`. Now it is possible to compare these directories and view the changes:
+It is possible to compare these directories and view the changes:
 - Difference between [diff/1.new_project](diff/1.new_project/) and [diff/2.cubemx](diff/2.cubemx)/ is device configuration.
 - Difference between  [diff/2.cubemx](diff/2.cubemx/) and [stm_sample](stm_sample/) is application code.
 
@@ -246,7 +246,7 @@ This Device Configuration finished state is kept in [diff/2.cubemx](diff/2.cubem
 
 Time for programming. Compare [diff/2.cubemx](diff/2.cubemx/) and [stm_sample](stm_sample/) directories. The difference is the code that we need to add now to our project.
 
-Add file [tcpserver.cpp](stm_sample/Core/Src/tcpserver.c) to the project. Other files should be updated. For everey file, managed by CubeMX, user code must be inside special code sections:
+Add file [tcpserver.cpp](stm_sample/Core/Src/tcpserver.c) to the project. Other files should be updated. For every file, managed by CubeMX, user code must be inside special code sections:
 
 ```
 /* USER CODE BEGIN section-name */
@@ -277,11 +277,11 @@ lwip.c
   USER CODE BEGIN 3
 ```
 
-##Testing
+## Testing
 
 `stm_sample` project is configured, user code is added and compiled. NUCLEO-F429ZI or another STM32 board is connected to the PC using USB. STMicroelectroncs STLink virtual COM port is available on the PC. Serial monitor can be used to view the program log messages.
 
-`stm_sample` IP address is `192.168.0.32 / 24`. TCP port is 50000. STM board is connected to PC using Ethernet cable. PC IP address is `192.168.0.32 / 24`.
+`stm_sample` IP address is `192.168.0.32 / 24`. TCP port is 50000. STM board is connected to PC using Ethernet cable. PC IP address is `192.168.0.1 / 24`.
 
 Start serial monitor (see **UART for tracing** section in this document), connect to STLink COM port. Build and run `stm_sample` program.
 
