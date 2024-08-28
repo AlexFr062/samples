@@ -131,13 +131,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cond_variable.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="notification.h" />
     <ClInclude Include="notification_data.h" />
     <ClInclude Include="notification_single.h" />
     <ClInclude Include="sync_print.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

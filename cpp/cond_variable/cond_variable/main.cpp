@@ -21,9 +21,9 @@ std::mutex sync_mutex;          // for sync_print
 
 int main()
 {
-    //test_notification();
-    //test_notification_single();
-    //test_notification_data();
+    test_notification();
+    test_notification_single();
+    test_notification_data();
     test_notification_single_data();
 
     return 0;
@@ -194,6 +194,12 @@ void test_notification_single_data()
 
     for (int i = 0; i < count1; ++i)
     {
+        // Typical way to send a message:
+        // lock
+        // add new message to vector
+        // unlock
+        // post notification.
+
         {
             std::unique_lock<std::mutex> lock(msg_mutex);
             sync_print("send string", ++message_id);
@@ -210,6 +216,12 @@ void test_notification_single_data()
             std::vector<message> v;
             nt.wait();
 
+            // Typical way to read all available messages:
+            // lock
+            // move to loacl vector, restore origimal vector state
+            // unlock
+            // handle all messages locally, when mutex is free.
+            
             {
                 std::unique_lock<std::mutex> lock(msg_mutex);
                 v = std::move(messages);
@@ -224,7 +236,7 @@ void test_notification_single_data()
         }
     });
 
-    std::this_thread::sleep_for(10ms);
+    std::this_thread::sleep_for(100ms);      // to make output more interesting
 
     for (int i = 0; i < count2; ++i)
     {
