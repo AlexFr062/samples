@@ -199,6 +199,8 @@ void test_notification_single_data()
 
     for (int i = 0; i < count1; ++i)
     {
+        sync_print("send string", ++message_id);
+
         // Typical way to send a message:
         // lock
         // add new message to vector
@@ -206,8 +208,7 @@ void test_notification_single_data()
         // post notification.
 
         {
-            std::unique_lock<std::mutex> lock(msg_mutex);
-            sync_print("send string", ++message_id);
+            std::lock_guard<std::mutex> lock(msg_mutex);
             messages.push_back(message{ std::string("string ") + std::to_string(message_id), command::execute });
         }
 
@@ -247,18 +248,20 @@ void test_notification_single_data()
 
     for (int i = 0; i < count2; ++i)
     {
+        sync_print("send string ", ++message_id);
+
         {
-            std::unique_lock<std::mutex> lock(msg_mutex);
-            sync_print("send string ", ++message_id);
+            std::lock_guard<std::mutex> lock(msg_mutex);
             messages.push_back(message{ std::string("string ") + std::to_string(message_id), command::execute });
         }
 
         nt.set();
     }
 
+    sync_print("send stop request");
+
     {
-        std::unique_lock<std::mutex> lock(msg_mutex);
-        sync_print("send stop request");
+        std::lock_guard<std::mutex> lock(msg_mutex);
         messages.push_back(message{ "", command::stop });
     }
 

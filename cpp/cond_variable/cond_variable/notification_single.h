@@ -54,7 +54,7 @@ public:
 
     void reset()
     {
-        std::unique_lock<std::mutex> ul(data_mutex);
+        std::lock_guard<std::mutex> ul(data_mutex);
         data = false;
     }
 
