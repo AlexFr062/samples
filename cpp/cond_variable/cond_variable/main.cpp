@@ -165,17 +165,22 @@ void test_notification_data()
 // for cross-thread notification.
 //
 // Expected output:
+// 
 // send string 1
 // send string 2
 // send string 3
+// wait succeeded
 // string 1
 // string 2
 // string 3
-// send string 4
-// send string 5
+// send string  4
+// wait succeeded
+// send string  5
 // send stop request
 // string 4
 // string 5
+//
+// Number of "wait succeeded" messahes can vary.
 //
 void test_notification_single_data()
 {
@@ -216,6 +221,8 @@ void test_notification_single_data()
             std::vector<message> v;
             nt.wait();
 
+            sync_print("wait succeeded");
+
             // Typical way to read all available messages:
             // lock
             // move to loacl vector, restore origimal vector state
@@ -224,7 +231,7 @@ void test_notification_single_data()
             
             {
                 std::unique_lock<std::mutex> lock(msg_mutex);
-                v = std::move(messages);
+                v = std::move(messages);    // v can be empty here
                 messages.clear();           // restore vector after moving from
             }
 
