@@ -175,19 +175,57 @@ Run `udp_client`:
 
 ## Cross-compilation
 
-Building a program directly on embedded board is not a good idea. Better build our program on PC and then deploy it to the board.
+Normally, development process for Embedded Linux includes cross-compilation, when executable for destination architectire (such as ARM) is done on a host system. Cross-compiler and `gdb` debugger can be integrated to some IDE, for example, Eclipse.
 
-Installing correct cross-compiler may be quite complicated. For 32 bit Raspberry OS, cross-compiler is called `arm-linux-gnueabihf-gcc`. We can build the program:
+Here we will continue to build our program from command line. Let's try to cross-compile it for Raspberry OS x64, using `gcc-aarch64-linux-gnu` package from Ubuntu repository:
 
 ```
-alex@u23:/home/alex/tmp/samples/Networking/UDP/udp_echo_server$ arm-linux-gnueabihf-gcc udp_echo_server.c -o udp_echo_server
-alex@u23:/home/alex/tmp/samples/Networking/UDP/udp_echo_server$ file udp_echo_server
-udp_echo_server: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV)
+alex@u23:~$ sudo apt-get install gcc-aarch64-linux-gnu
+...
+Processing triggers for libc-bin (2.35-0ubuntu3.8) ...
+
+alex@u23:~$ aarch64-linux-gnu-gcc --version
+aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ```
 
-Then we can copy `udp_echo_server` executable to the board with `scp` command, and execute it there.
+Now we can build an executable on Ubuntu host, copy it to the board and execute it there:
 
-For x64 Raspberry OS, follow this article: [Raspberry Pi GCC 64-Bit Cross-Compiler Toolchains Setup Guide](https://github.com/abhiTronix/raspberry-pi-cross-compilers/wiki/64-Bit-Cross-Compiler:-Installation-Instructions)
+```
+alex@u23:~/tmp/samples/Networking/UDP/udp_echo_server$ aarch64-linux-gnu-gcc udp_echo_server.c -o udp_echo_server
+alex@u23:~/tmp/samples/Networking/UDP/udp_echo_server$ ls
+readme.md  udp_echo_server  udp_echo_server.c
+alex@u23:~/tmp/samples/Networking/UDP/udp_echo_server$ file udp_echo_server
+udp_echo_server: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=eb756d5c59858992f9f961024c05fec699e0d998, for GNU/Linux 3.7.0, not stripped
+
+alex@u23:~/tmp/samples/Networking/UDP/udp_echo_server$ scp udp_echo_server pi@192.168.3.14:/home/pi
+pi@192.168.3.14's password: 
+udp_echo_server                                                                               100%   13KB   6.2MB/s   00:00    
+alex@u23:~/tmp/samples/Networking/UDP/udp_echo_server$ ssh pi@192.168.3.14
+pi@192.168.3.14's password: 
+Linux raspberrypi 6.6.31+rpt-rpi-v8 #1 SMP PREEMPT Debian 1:6.6.31-1+rpt1 (2024-05-29) aarch64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Jul  4 10:40:47 2024 from fc00::1
+
+SSH is enabled and the default password for the 'pi' user has not been changed.
+This is a security risk - please login as the 'pi' user and type 'passwd' to set a new password.
+
+pi@raspberrypi:~ $ ls
+Bookshelf  Desktop  Documents  Downloads  Music  Pictures  Public  Templates  udp_echo_server  Videos
+pi@raspberrypi:~ $ ./udp_echo_server 
+UDP echo server started
+port 41000 IPv4
+socket is created
+bound to port 41000
+```
 
 ## Communication over WiFi with BeagleBone Black Wireless
 
