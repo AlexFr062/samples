@@ -67,9 +67,11 @@ Run `udp_client`:
 
 This description is board-specific: I am using Raspberry Pi 4 Model B. Generally, any Embedded Linux board with Ethernet connector is OK for this test.
 
-We need SD card with operating system, as described in the [Raspberry Pi](https://www.raspberrypi.com/documentation/computers/getting-started.html) article. By default, user name is `pi`, password `raspberry`.
+### Old 32 bit Raspberry OS
 
-Before running the board, we need to set static IP address. Connect SD card to Linux PC. Open file `/media/user/rootfs/etc/dhcpcd.conf` in text editor. Doesn't work? Try to do this with `sudo`.
+Old Raspberry SD card with 32-bit OS has default user name `pi`, password `raspberry`.
+
+Before running the board, we need to set static IP address. Connect SD card to Linux PC. Two partitions are available: rootfs and bootfs. Open file `/media/user/rootfs/etc/dhcpcd.conf` in text editor. Doesn't work? Try to do this with `sudo`.
 
 Add the following lines to the end of `dhcpcd.conf`:
 
@@ -82,7 +84,25 @@ static domain_name_servers=192.168.3.1 8.8.8.8 fd51:42f8:caae:d92e::1
 ```
 Save file, remove SD card from PC and attach it to the board.
 
-Set PC static IPv4 address `192.168.3.1/24` and IPv6 address `fc00::1/64". Connect PC and board with an Ethernet cable, power up the board.
+### New x64 Raspberry OS
+
+To prepare SD card, follow [Raspberry Pi Getting started](https://www.raspberrypi.com/documentation/computers/getting-started.html) article.
+
+When SD card is ready, insert it to the board. Connect mouse, keyboard and monitor to the board, Power up RPI using USB C power supply 5V, 3A.
+
+Login with a user name and password, which was set in Raspberry Pi Imager (user name is usually pi, password raspberry or something else). Open a terminal window, execute command:
+
+```
+sudo nmtui
+```
+
+Find wired network settings, set static IP `192.168.3.14/24, fc00::2/64`. OK, close application.
+
+Shut down. Disconnect mouse, keyboard and monitor. 
+
+### Connecting to PC
+
+Set PC static IPv4 address `192.168.3.1/24` and IPv6 address `fc00::1/64`. Connect PC and board with an Ethernet cable, power up the board.
 
 ```
 alex@u23:~$ ping 192.168.3.14
@@ -157,7 +177,7 @@ Run `udp_client`:
 
 Building a program directly on embedded board is not a good idea. Better build our program on PC and then deploy it to the board.
 
-Installing correct cross-compiler may be quite complicated, I am not going to explain this topic here. Finally, having `arm-linux-gnueabihf-gcc` cross-compiler on the PC, we can build the program:
+Installing correct cross-compiler may be quite complicated. For 32 bit Raspberry OS, cross-compiler is called `arm-linux-gnueabihf-gcc`. We can build the program:
 
 ```
 alex@u23:/home/alex/tmp/samples/Networking/UDP/udp_echo_server$ arm-linux-gnueabihf-gcc udp_echo_server.c -o udp_echo_server
@@ -166,6 +186,8 @@ udp_echo_server: ELF 32-bit LSB pie executable, ARM, EABI5 version 1 (SYSV)
 ```
 
 Then we can copy `udp_echo_server` executable to the board with `scp` command, and execute it there.
+
+For x64 Raspberry OS, follow this article: [Raspberry Pi GCC 64-Bit Cross-Compiler Toolchains Setup Guide](https://github.com/abhiTronix/raspberry-pi-cross-compilers/wiki/64-Bit-Cross-Compiler:-Installation-Instructions)
 
 ## Communication over WiFi with BeagleBone Black Wireless
 
