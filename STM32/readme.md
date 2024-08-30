@@ -196,7 +196,7 @@ Tasks and queues: defaultTask and serverTask.
 ### LWIP
 
 Enabled. 
-- General settings. DHCP: Disabled. IP address: `192.168.0.10`, Subnet mask `255.255.255.0`.
+- General settings. DHCP: Disabled. IP address: `192.168.0.32`, Subnet mask `255.255.255.0`.
 - Platform settings, Driver_PHY: LAN8742. For another board, this may be different.
 
 ### NVIC
