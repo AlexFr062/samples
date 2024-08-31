@@ -9,6 +9,7 @@
 - Embedded Linux
 - Raspberry Pi
 - BeagleBone
+- Cross-compilation
 - WiFi
 
 
@@ -135,7 +136,7 @@ Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
 permitted by applicable law.
 Last login: Sat Dec  4 19:17:12 2021
 pi@raspberrypi:~ $ ls
-Bookshelf  Documents  label.txt  Music     Public     test               Videos
+Bookshelf  Documents  Music     Public     Videos
 Desktop    Downloads  Pictures  Templates  udp_echo_server.c
 pi@raspberrypi:~ $ gcc udp_echo_server.c -o udp_echo_server
 pi@raspberrypi:~ $ file udp_echo_server
@@ -175,7 +176,7 @@ Run `udp_client`:
 
 ## Cross-compilation
 
-Normally, development process for Embedded Linux includes cross-compilation, when executable for destination architectire (such as ARM) is done on a host system. Cross-compiler and `gdb` debugger can be integrated to some IDE, for example, Eclipse.
+Normally, development process for Embedded Linux includes cross-compilation, when executable for destination architecture (such as ARM) is done on a host system. Cross-compiler and `gdb` debugger can be integrated to some IDE, for example, Eclipse.
 
 Here we will continue to build our program from command line. Let's try to cross-compile it for Raspberry OS x64, using `gcc-aarch64-linux-gnu` package from Ubuntu repository:
 
