@@ -1,15 +1,15 @@
 # Code samples
 
 
-### [TCP server](Networking/TCP/TcpServer/)  
+### [TCP server (C#)](Networking/TCP/TcpServer/)  
 
-### [TCP client](Networking/TCP/TcpHexClient/) 
+### [TCP client (Python)](Networking/TCP/TcpHexClient/) 
 
 ### [UDP client and server (C++, Windows + Linux)](Networking/UDP/sv_client) 
 
 ### [UDP server (C, Linux, Embedded)](Networking/UDP/udp_echo_server) 
 
-### [STM32 TCP communications](STM32/)
+### [STM32 TCP communications](STM32/tcp_comm/)
 
 ### [C++ condition_variable wrapper](cpp/cond_variable/)
 
