@@ -190,8 +190,8 @@ Advanced settings. USE_NEWLIB_REENTRANT Enabled.
 
 Tasks and queues: defaultTask and serverTask. 
 
-![Default task](../images/default_task.png) 
-![Server task](../images/server_task.png)
+![Default task](../../images/default_task.png) 
+![Server task](../../images/server_task.png)
 
 ### LWIP
 
@@ -221,7 +221,7 @@ Leave it for at least several minutes - ping must work without errors, 0% loss. 
 
 Maybe this is old STM bug, which is fixed by changing an optimization level from `-O0` to `-Og`:
 
-![Optimization](../images/optimization.png) 
+![Optimization](../../images/optimization.png) 
 
 Still not working? Compare [diff/2.cubemx](diff/2.cubemx/) directory (device configuration finished) with [diff/1.new_project](diff/1.new_project/) directory. You can see all the changes in `stm_sample.ioc` file. Review them, maybe device configuration is incorrect.
 
