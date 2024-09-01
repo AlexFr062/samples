@@ -35,7 +35,7 @@ Having NUCLEO-F429ZI evaluation board, it is poissible to use [stm_sample](stm_s
 - Open Device Configuration tool: double-click `stm_sample.ioc`.
 - Execute command Project - Generate code. Only minimal set of files is kept in the repository. Missing files are created during code generation.
 - Build and run the project.
-- Test it it using [TCP client](../Networking/TCP/TcpHexClient/).
+- Test it it using [TCP client](../../Networking/TCP/TcpHexClient/).
 
 For any other STM32 board it is necessary to create a new project, make device configuration and add the code. There is no binary compatibility between different boards.
 
@@ -62,7 +62,7 @@ Viewing the difference can help you to create your own project. Device configura
 
 Project Explorer should look like this:
 
-![Project explorer](../images/project_explorer.png)
+![Project explorer](../../images/project_explorer.png)
 
 
 If you don't see full source files tree - open Device Configuration tool (double-click `stm_sample.ioc` in the Project Explorer), and execute Project - Generate code.
@@ -76,7 +76,7 @@ If you see this message:
 *The selection cannot be launced, and there are no recent launches*, 
 Open Run configurations dialog and create new STM32 configuration:
 
-![Run configurations](../images/run_configurations.png)
+![Run configurations](../../images/run_configurations.png)
 ---
 
 Execute this "do-nothing" program:
@@ -145,7 +145,7 @@ This initial state is kept in [diff/1.new_project](diff/1.new_project/) director
 
 ## Device Configuration
 
-![Device configuration](../images/device_config.png)
+![Device configuration](../../images/device_config.png)
 
 The left configuration pane contains the list of devices and software packages. Select required element and then configure it in the right pane.
 
@@ -164,11 +164,11 @@ Select USART3, set the following parameters: Mode Asynchronous, Flow control Dis
 
 USART3 in NUCLEO-F429ZI is connected to Serial-over-USB port. On another board, UART port may be different - see specific board documentation. Connect the board to PC with USB cable. Required STM32 drivers should be already installed, this is done by STM32CubeIDE installation. Open PC Device manager:
 
-![Device manager](../images/com_port.png)
+![Device manager](../../images/com_port.png)
 
 We can view COM4 (name may be different), using any serial port terminal. For example, Serial Monitor extension in Visual Studio Code. Once installed, select Terminal - New Terminal - Serial Monitor. Set required serial port parameters, as in STM32 project, and click Start Monitoring:
 
-![Device manager](../images/serial_monitor.png)
+![Device manager](../../images/serial_monitor.png)
 
 Later in this document, this monitor window is mentioned as **Serial Log**. Our program will use `printf` to print information to the Serial Log. For now, this window is empty.
 
@@ -313,7 +313,7 @@ Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
 ```
 
-To talk with `stm_sample` TCP server, we can use [TCP client](../Networking/TCP/TcpHexClient/):
+To talk with `stm_sample` TCP server, we can use [TCP client](../../Networking/TCP/TcpHexClient/):
 
 ```
 C:\tmp\samples\Networking\TCP\TcpHexClient>python hex_client.py
@@ -325,7 +325,7 @@ C:\tmp\samples\Networking\TCP\TcpHexClient>python hex_client.py
 
 Set IP address `192.168.0.32`, port 50000, IPv4, click Connect. Type any hexadecimal string and click Send, the same string should be received, since `stm_sample` is echo server:
 
-![Optimization](../images/tcp_cl_stm.png)
+![Optimization](../../images/tcp_cl_stm.png)
 
 Don't try to run several TCP clients, our server can handle only one client at the same time.
 
