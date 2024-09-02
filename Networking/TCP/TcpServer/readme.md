@@ -43,7 +43,7 @@ When to use? During development process:
 ---
 ## Running TCP server in Linux
 
-Microsoft .NET program may run of different OS. Let's try to run EchoServer on Ununtu 22.04 x64.
+Microsoft .NET program may run on different OS. Let's try to run EchoServer on Ununtu 22.04 x64.
 
 Open TcpServer solution in Visual Studio 2022, right-click on EchoServer project - Publish. Select "Publish to directory" and continue. Finally, it should create `publish` directory in `bin\Release\net8.0`. To run the server, we can execute `EchoServer.exe` or `dotnet EchoServer.dll`:
 
