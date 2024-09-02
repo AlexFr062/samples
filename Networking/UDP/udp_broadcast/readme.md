@@ -4,8 +4,8 @@
 - Broadcast
 - IPv4
 - Network discovery
-- C#
 - C
+- C#
 - STM32
 - STM32CubeIDE
 - Embedded
@@ -111,7 +111,7 @@ Build and run the project.
 
 ---
 
-Note. Our STM32 project has hard-coded IP address. In real life, IP address is read from device flash memory.
+Note. Our STM32 project has hard-coded IP address. In real life, IP address is read from the device flash memory.
 
 ---
 
