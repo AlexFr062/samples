@@ -47,7 +47,7 @@ namespace FindDevice
 
             if (devices.Count == 0)
             {
-                SyncConsole.Print("Device not fount");
+                SyncConsole.Print("Device not found");
             }
 
             foreach (var device in devices)
