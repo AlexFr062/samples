@@ -21,7 +21,7 @@ from message import Message
 
 loggingLevel = level=logging.INFO
 #loggingLevel = level=logging.DEBUG              # print all
-programName = 'HexClient'
+programName = 'TCP Hex Client'
 
 class HexClientWindow(QMainWindow):
     def __init__(self, parent=None):
