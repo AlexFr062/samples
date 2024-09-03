@@ -41,11 +41,11 @@ We define our device-specific communication protocol by the following way:
 ```
 Detection UDP port:    8
 Detection request:     A0 50 xx xx xx xx xx xx xx xx
-Detection reply:       A0 50 i0 i1 i2 i3 m0 m1 m3 m3
+Detection reply:       A0 50 i0 i1 i2 i3 m0 m1 m2 m3
 
 xx - any byte
 i0 i1 i2 i3 - device IP address.
-m0 m1 m3 m3 - device subnet mask.
+m0 m1 m2 m3 - device subnet mask.
 ```
 
 ## Different ways to create STM32 project
@@ -68,7 +68,7 @@ STM sample can be imported to STM32CubeIDE using *File - Import - General - Exis
 The better way is: 
 - Start STM32CubeIDE.
 - *File - Import - General - Import STM32CubeExample*. Next.
-- Click Example Selector. Find required example in the huge list. In my case, this is LwIP_UDPTCP_Echo_Server_Netconn_RTOS, STM32469I-EVAL. Select the example an continue.
+- Click Example Selector. Find required example in the huge list. In my case, this is LwIP_UDPTCP_Echo_Server_Netconn_RTOS, STM32469I-EVAL. Select the example and continue.
 - Select destination directory to save the project.
 
 ## Coding
