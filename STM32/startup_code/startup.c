@@ -22,6 +22,7 @@ void Usage_Fault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 uint32_t g_pfnVectors[] __attribute__((section(".isr_vector"))) =
 {
   STACK_POINTER_INIT_ADDRESS,
+
   // Cortex-M system exceptions
   (uint32_t)&Reset_Handler,
   (uint32_t)&Nmi_Handler,
@@ -41,6 +42,12 @@ void Default_Handler()
 
 void Reset_Handler()
 {
+    asm ("ldr r0, = g_data1");  // r0 = &g_data1    0x20000000
+    asm ("ldr r1, [r0]");       // r1 = *r0         0xbe00                 junk, expected 0xA1020304
+    asm ("ldr r2, = g_data2");  // r2 = &data2      0x20000020
+    asm ("ldr r3, [r2]");       // r3 = *r2         0x60015155             junk, expected 0
+
+
     for(;;) {}
 }
 

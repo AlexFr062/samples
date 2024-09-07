@@ -122,7 +122,7 @@ void Nmi_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void Hard_Fault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void Bus_Fault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void Usage_Fault_Handler(void) __attribute__((weak, alias("Default_Handler")));
-`
+```
 
 Some of them may be implemented somewhere in the project. If not, the handler is mapped to `default_handler`. Finally, define the vector table:
 
@@ -145,7 +145,17 @@ Start debuggin with breakpoint at endless loop in `Reset_Handler`. The value of 
 0x2002fffc = 0x20030000 - 4
 ```
 
-Seems to be OK.
+Seems to be OK. Now that stack pointer is fixed, let's see the next problem. I want to see the values of `g_data1` and `g_data2` variables. Sometimes debugger is not happy to show a global varables, this temporary code helps to see this information:
+
+```
+    asm ("ldr r0, = g_data1");  // r0 = &g_data1    0x20000000
+    asm ("ldr r1, [r0]");       // r1 = *r0         0xbe00                 junk, expected 0xA1020304
+    asm ("ldr r2, = g_data2");  // r2 = &data2      0x20000020
+    asm ("ldr r3, [r2]");       // r3 = *r2         0x60015155             junk, expected 0
+```
+
+## Global variables
+
 
 
 
