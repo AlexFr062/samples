@@ -189,7 +189,6 @@ memset(&sbss, 0, &_ebss - &_sbss);
 This is Assembly `Reset_Handler` code with my C-style comments:
 ```
   // Copy (&_edata - &_sdata)/4  uint32_t values  from _sidata to _sdata 
-  
   ldr r0, =_sdata               // 0x20000000                 destination address, start (SRAM)
   ldr r1, =_edata               // 0x2000000c                 destination address, end   (SRAM)
   ldr r2, =_sidata              // 0x8001954                  source address, flash
@@ -206,10 +205,7 @@ LoopCopyDataInit:
   cmp r4, r1                    // compare r4, r1
   bcc CopyDataInit              // goto if Carry clear (identical to LO, Unsigned lower)   if r4 < r1 go to CopyDataInit
   
-/* Zero fill the bss segment. */
-
   // zero (&_ebss - &_sbss)/4  uint32_t values from, starting from _sbss 
-
   ldr r2, =_sbss                // r2 = &bss                  destination address, start
   ldr r4, =_ebss                // r4 = &bss                  destination address, end
   movs r3, #0                   // r3 = 0                     used to write 0 to destination
@@ -224,6 +220,78 @@ LoopFillZerobss:
   bcc FillZerobss               // if r2 < r4 go to CopyDataInit
 ```
 
+Let's translate this to C and add to `startup.c`:
+
+```
+    // Copy (&edata - &_sdata)/4  uint32_t values  from _sidata (flash) to _sdata (SRAM)
+
+    const uint32_t data_size = ((uint32_t)&_edata - (uint32_t)&_sdata) / 4;
+
+    uint32_t *source_ptr = (uint32_t*) &_sidata; // Flash
+    uint32_t *dest_ptr = (uint32_t*) &_sdata;    // SRAM
+
+    for (uint32_t i = 0; i < data_size; i++)
+    {
+        dest_ptr[i] = source_ptr[i];
+    }
+
+    asm ("ldr r0, = g_data1");  // 0x20000000
+    asm ("ldr r1, [r0]");       // 0xa1020304             OK
+    asm ("ldr r2, = g_data2");  // 0x20000020
+    asm ("ldr r3, [r2]");       // 0x60015155             still junk
+
+    // zero (&_ebss - &_sbss)/4  uint32_t values, starting from _sbss
+
+    const uint32_t bss_size = ((uint32_t)&_ebss - (uint32_t)&_sbss) / 4;
+    dest_ptr = (uint32_t*) &_sbss;
+
+    for (uint32_t i = 0; i < bss_size; i++)
+    {
+        dest_ptr[i] = 0;
+    }
+
+    asm ("ldr r0, = g_data1");  // 0x20000000
+    asm ("ldr r1, [r0]");       // 0xa1020304             OK
+    asm ("ldr r2, = g_data2");  // 0x20000020
+    asm ("ldr r3, [r2]");       // 0x0                    OK
+```
+The first loop fixes `g_data1` value, the second loop fixes `g_data2`. 
+
+
+Now that global variables are initialized, I wan to call `main` function instead of endless loop:
+
+```
+    main();
+    //for(;;) {}
+```
+
+Run the program - LED1 is not blinking.
+
+## How to get the main function working
+
+Using debugger, we can see that the program crashes and out `Default_handler` is called. Comparing two `Reset_handler` functions, I see the following Assembly lines:
+
+```
+bl  SystemInit         /* in the beginning*/
+bl __libc_init_array   /* before main function */
+```
+`SystemInit` can be found in the project. Search for `__libc_init_array` in the project doesn't give any results. There are several discussions regaring `__libc_init_array` in the WEB. I call bothe functions:
+
+```
+void SystemInit(void);
+void __libc_init_array();
+
+void Reset_Handler()
+{
+    SystemInit();
+
+    // ...
+    
+    __libc_init_array();
+    main();
+}
+```
+They are called successfully, but the program still crashes.
 
 
 
