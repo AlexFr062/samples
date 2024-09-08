@@ -258,7 +258,7 @@ Let's translate this to C and add to `startup.c`:
 The first loop fixes `g_data1` value, the second loop fixes `g_data2`. 
 
 
-Now that global variables are initialized, I wan to call `main` function instead of endless loop:
+Now that global variables are initialized, I want to call `main` function instead of endless loop:
 
 ```
     main();
@@ -269,13 +269,13 @@ Run the program - LED1 is not blinking.
 
 ## How to get the main function working
 
-Using debugger, we can see that the program crashes and out `Default_handler` is called. Comparing two `Reset_handler` functions, I see the following Assembly lines:
+Using debugger, we can see that the program crashes and our `Default_handler` is called. Comparing two `Reset_handler` functions, I see the following Assembly lines:
 
 ```
 bl  SystemInit         /* in the beginning*/
 bl __libc_init_array   /* before main function */
 ```
-`SystemInit` can be found in the project. Search for `__libc_init_array` in the project doesn't give any results. There are several discussions regaring `__libc_init_array` in the WEB. I call bothe functions:
+`SystemInit` can be found in the project. Search for `__libc_init_array` in the project doesn't give any results. There are several discussions regaring `__libc_init_array` in the WEB, with some explanations. I call both functions:
 
 ```
 void SystemInit(void);
