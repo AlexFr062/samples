@@ -156,6 +156,74 @@ Seems to be OK. Now that stack pointer is fixed, let's see the next problem. I w
 
 ## Global variables
 
+To get properly initialized global variables, we need to understand linker script variables. These variables can be accessed to C programmer by defining them as `extern uint8_t`, they are placed in the beginning and in the end of different sections.
+
+```
+// SRAM:
+extern uint8_t _sdata;		// start address for the .data section   (initialized data section)
+extern uint8_t _edata;		// end address for the .data section
+extern uint8_t _sbss;		// start address for the .bss section     (uninitialized data section)
+extern uint8_t _ebss;		// end address for the .bss section
+
+// Flash:
+extern uint8_t _sidata;		// start address for initialized values
+```
+
+Initialized clobal variable `g_data1` belongs to `.data` section, uninitialized variable `g_data` belongs to `.bss` section. We can see the section addresses in the debugger: `&sdata` etc. It is also possible to load them to the registers, which can be observed in the Registers debugger window:
+
+```
+    asm ("ldr r0, =_sdata");    // 0x20000000    r0 = &_sdata   SRAM
+    asm ("ldr r1, =_edata");    // 0x20000004    r1 = &_edata   SRAM
+    asm ("ldr r2, =_sbss");     // 0x20000004    r2 = &_sbss    SRAM
+    asm ("ldr r3, =_ebss");     // 0x20000024    r3 = &_sbss    SRAM
+    asm ("ldr r4, =_sidata");   // 0x80000b8     r4 = &_sidata  flash
+```
+Upon receiving the Reset interrupt, STM32 board loads an executable from its flash memory to SRAM, and calls `Reset_Handler` function. Flash memory is mapped to the virtial address `0x8000000` id the process, and linker label `_sidata` is placed in the beginning of initialized variables section in the program.
+
+Assembly `Reset_Handler` code copies `.data` section from flash ro SRAM, and zeroes `bss` section. It works like the following C pseudo-code:
+
+```
+memcpy(&_sdata, &_sidata, &_edata - &_sdata);
+memset(&sbss, 0, &_ebss - &_sbss);
+```
+This is Assembly `Reset_Handler` code with my C-style comments:
+```
+  // Copy (&_edata - &_sdata)/4  uint32_t values  from _sidata to _sdata 
+  
+  ldr r0, =_sdata               // 0x20000000                 destination address, start (SRAM)
+  ldr r1, =_edata               // 0x2000000c                 destination address, end   (SRAM)
+  ldr r2, =_sidata              // 0x8001954                  source address, flash
+  movs r3, #0                   // 0                          offset (source, destination, step 4)
+  b LoopCopyDataInit            // go to LoopCopyDataInit
+
+CopyDataInit:
+  ldr r4, [r2, r3]              // r4 = &(r2 + r3) 0xf42400   read source to r4
+  str r4, [r0, r3]              // *(r0 + r3) = r4            write destination from r4
+  adds r3, r3, #4               // r3 += 4                    offset += 4
+
+LoopCopyDataInit:
+  adds r4, r0, r3               // r4 = r0 + r3   0x20000000 0x20000004 ...   r4 = current destination address
+  cmp r4, r1                    // compare r4, r1
+  bcc CopyDataInit              // goto if Carry clear (identical to LO, Unsigned lower)   if r4 < r1 go to CopyDataInit
+  
+/* Zero fill the bss segment. */
+
+  // zero (&_ebss - &_sbss)/4  uint32_t values from, starting from _sbss 
+
+  ldr r2, =_sbss                // r2 = &bss                  destination address, start
+  ldr r4, =_ebss                // r4 = &bss                  destination address, end
+  movs r3, #0                   // r3 = 0                     used to write 0 to destination
+  b LoopFillZerobss
+
+FillZerobss:
+  str  r3, [r2]                 // *r2 = r3
+  adds r2, r2, #4               // r2 += 4
+
+LoopFillZerobss:
+  cmp r2, r4                    // compare r2 and r4
+  bcc FillZerobss               // if r2 < r4 go to CopyDataInit
+```
+
 
 
 
