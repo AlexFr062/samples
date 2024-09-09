@@ -13,7 +13,10 @@
 
 ### [STM32 TCP communications](STM32/tcp_comm/)
 
+### [STM32 startup code](STM32/startup_code/)
+
 ### [C++ condition_variable wrapper](cpp/cond_variable/)
+
 
 
 

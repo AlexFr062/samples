@@ -273,6 +273,7 @@ Using debugger, we can see that the program crashes and our `Default_handler` is
 
 ```
 bl  SystemInit         /* in the beginning*/
+...
 bl __libc_init_array   /* before main function */
 ```
 `SystemInit` can be found in the project. Search for `__libc_init_array` in the project doesn't give any results. There are several discussions regaring `__libc_init_array` in the WEB, with some explanations. I call both functions:
@@ -291,8 +292,9 @@ void Reset_Handler()
     main();
 }
 ```
-They are called successfully, but the program still crashes.
+They are executed successfully, but the program still crashes. Currently it crashes on the first `HAL_Delay` call, but don't try to replace it with a busy loop - it wil crask somewhere else.
 
+Finally, to get all functions working, it is necessary to fill the whole interrupt vector `g_pfnVectors`. Copy all forward declarations for interrupt handlers from Assembly startup file, translating them from Assembly to C. Keep the same function names, since they may be overridded somewhere in the project. Fill interrupt vector, including 0 placeholders, endure that is has the same length in C. Build and run the program, now it should work. Led is blinking.
 
-
+C startup file for NUCLEO-F429ZI in it's final state can be found in this repository: [startup.c](startup.c).
 
