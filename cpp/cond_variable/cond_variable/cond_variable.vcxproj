@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="notification.h" />
     <ClInclude Include="notification_data.h" />
+    <ClInclude Include="notification_data_v.h" />
     <ClInclude Include="notification_single.h" />
     <ClInclude Include="sync_print.h" />
   </ItemGroup>

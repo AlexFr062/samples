@@ -27,6 +27,9 @@
     <ClInclude Include="notification_single.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="notification_data_v.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
