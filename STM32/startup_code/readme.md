@@ -334,6 +334,7 @@ Open `bin` file in Hex editor, offset `0x19ac`: `04 03 02 A1`.
 ![CubeProgrammer](../../images/CubeProgrammer.png)
 Click Download.
 ```
+
   13:28:13 : Read File: C:\tnp\samples\STM32\startup_code\f429\Debug\f429.bin
   13:28:13 : Number of segments: 1
   13:28:13 : segment[0]: address= 0x0, size= 0x19BC
