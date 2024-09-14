@@ -295,7 +295,56 @@ void Reset_Handler()
 ```
 They are executed successfully, but the program still crashes. Currently it crashes on the first `HAL_Delay` call, but don't try to replace it with a busy loop - it wil crash somewhere else.
 
-Finally, to get all functions working, it is necessary to fill the whole interrupt vector `g_pfnVectors`. Copy all forward declarations for interrupt handlers from Assembly startup file, translating them from Assembly to C. Keep the same function names, since they may be overridded somewhere in the project. Fill interrupt vector, including 0 placeholders, endure that is has the same length in C. Build and run the program, now it should work. Led is blinking.
+Finally, to get all functions working, it is necessary to fill the whole interrupt vector `g_pfnVectors`. Copy all forward declarations for interrupt handlers from Assembly startup file, translating them from Assembly to C. Keep the same function names, since they may be overridden somewhere else in the project. Fill interrupt vector, including 0 placeholders, ensure that is has the same length in C. Build and run the program, now it should work. Led is blinking.
 
 C startup file for NUCLEO-F429ZI in it's final state can be found in this repository: [startup.c](startup.c).
 
+## Different ways to see an initialized global variable
+
+Set breakpoint in `startup c`, line
+```
+    main();
+```    
+Start debugger. View the following values in the Live Expressions window:
+
+```
+&g_data1    0x20000000
+&_sdata     0x20000000
+&_edata     0x20000010
+&_sidata     0x80019ac
+```
+
+We can see that `g_data` variable is in the beginning of the .data section. Open Memory window from address `0x2000000`, it shows `040302A1`, which is initiall `g_data` value, with Little Endian correction. This is writable memory area in SRAM. Change the memory address to `0x80019ac`, it shows `040302A1` again. This is flash memory, mapped to the process virtual address. This address is read-only. The bebinning of the flash memory is mapped to `0x800000`, so I expect to see the same value in executable file, with offset `0x19ac`.
+
+By default, exclpse project generates executable in `elf` format. THis is not what we need, since ut contains an executable code with some additional information. We an ask Eclipse to produce a `bin` file: Project - Properties - C/C++ Bulild->Settings->Tool Settings->MCU Post Build outputs. Check "Convert to binary fle": 
+![Build binary](../../images/binary.png)
+
+
+ Build the project:
+
+```
+arm-none-eabi-objcopy  -O binary f429.elf  "f429.bin"
+```
+
+Open `bin` file in Hex editor, offset `0x19ac`: `04 03 02 A1`. 
+
+`.bin` format is what we need, when it is necessary to burn an executable in the device flash memory. For example, open STM32CubeProgrammer, click Connect - by default it shows ther address `0x08000000`, which is the beginning of the flash memory. Open .bin` file, verifi thad download address is `0x08000000`:
+![CubeProgrammer](../../images/CubeProgrammer.png)
+Click Download.
+```
+13:28:13 : Read File: C:\tnp\samples\STM32\startup_code\f429\Debug\f429.bin
+  13:28:13 : Number of segments: 1
+  13:28:13 : segment[0]: address= 0x0, size= 0x19BC
+  13:30:46 : Memory Programming ...
+  13:30:46 : Opening and parsing file: f429.bin
+  13:30:46 :   File          : f429.bin
+  13:30:46 :   Size          : 6.43 KB 
+  13:30:46 :   Address       : 0x08000000 
+  13:30:46 : Erasing memory corresponding to segment 0:
+  13:30:46 : Erasing internal memory sector 0
+  13:30:47 : Download in Progress:
+  13:30:47 : File download complete
+  13:30:47 : Time elapsed during download operation: 00:00:00.377
+```
+
+Disconnect, reset the board. The program must work.
