@@ -316,7 +316,7 @@ Start debugger. View the following values in the Live Expressions window:
 
 We can see that `g_data` variable is in the beginning of the .data section. Open Memory window from address `0x2000000`, it shows `040302A1`, which is initiall `g_data` value, with Little Endian correction. This is writable memory area in SRAM. Change the memory address to `0x80019ac`, it shows `040302A1` again. This is flash memory, mapped to the process virtual address. This address is read-only. The beginning of the flash memory is mapped to `0x800000`, so I expect to see the same value in executable file, with offset `0x19ac`.
 
-By default, STM32CubeIDE project generates an executable in `elf` format. This is not what we need, since it contains an executable code with some additional information. We an ask STM32CubeIDE to produce a `bin` file: Project - Properties - C/C++ Bulild->Settings->Tool Settings->MCU Post Build outputs. Check "Convert to binary fle": 
+By default, STM32CubeIDE project generates an executable in `elf` format. This is not what we need, since it contains an executable code with some additional information. We can ask STM32CubeIDE to produce a `bin` file: Project - Properties - C/C++ Bulild->Settings->Tool Settings->MCU Post Build outputs. Check "Convert to binary fle": 
 ![Build binary](../../images/binary.png)
 
 
@@ -324,6 +324,8 @@ By default, STM32CubeIDE project generates an executable in `elf` format. This i
 
 ```
 arm-none-eabi-objcopy  -O binary f429.elf  "f429.bin"
+...
+Finished building: f429.bin
 ```
 
 Open `bin` file in Hex editor, offset `0x19ac`: `04 03 02 A1`. 
@@ -332,7 +334,7 @@ Open `bin` file in Hex editor, offset `0x19ac`: `04 03 02 A1`.
 ![CubeProgrammer](../../images/CubeProgrammer.png)
 Click Download.
 ```
-13:28:13 : Read File: C:\tnp\samples\STM32\startup_code\f429\Debug\f429.bin
+  13:28:13 : Read File: C:\tnp\samples\STM32\startup_code\f429\Debug\f429.bin
   13:28:13 : Number of segments: 1
   13:28:13 : segment[0]: address= 0x0, size= 0x19BC
   13:30:46 : Memory Programming ...
