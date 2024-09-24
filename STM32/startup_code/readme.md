@@ -218,7 +218,7 @@ FillZerobss:
 
 LoopFillZerobss:
   cmp r2, r4                    // compare r2 and r4
-  bcc FillZerobss               // if r2 < r4 go to CopyDataInit
+  bcc FillZerobss               // if r2 < r4 go to FillZerobss
 ```
 
 Let's translate this to C and add to `startup.c`:
