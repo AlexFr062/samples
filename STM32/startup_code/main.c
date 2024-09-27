@@ -70,12 +70,8 @@ int main(void)
 
 
 #if 0
-	// Minimal LED blinking code. C, no HAL, busy loop.
+  // Minimal LED blinking code. C, no HAL, busy loop.
 
-
-	// See STM32WithoutCubeIDE, Project/Blink.
-  //
-  //
   // Enable the peripheral clock for GPIO port B
   //  __HAL_RCC_GPIOB_CLK_ENABLE();
 
