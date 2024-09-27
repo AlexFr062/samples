@@ -75,58 +75,58 @@ int main(void)
   // Enable the peripheral clock for GPIO port B
   //  __HAL_RCC_GPIOB_CLK_ENABLE();
 
-	volatile uint32_t* ptr = ((volatile uint32_t*) ((((0x40000000U) + 0x20000U) + 0x3800U) + (0x30U)));
-	*ptr |= 2;
+  volatile uint32_t* ptr = ((volatile uint32_t*) ((((0x40000000U) + 0x20000U) + 0x3800U) + (0x30U)));
+  *ptr |= 2;
 
-	volatile uint32_t dummy;
-	dummy = *ptr;
-	dummy;
+  volatile uint32_t dummy;
+  dummy = *ptr;
+  dummy;
 
 
-	// Set pin PB0 as output pin.
-	//
-	//    B0                 Pin 1
-	// GPIO_TypeDef::MODER |= 1
-	//
-	// GPIO_InitTypeDef GPIO_InitStruct = {0};
-	// GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	// HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  // Set pin PB0 as output pin.
+  //
+  //    B0                 Pin 1
+  // GPIO_TypeDef::MODER |= 1
+  //
+  // GPIO_InitTypeDef GPIO_InitStruct = {0};
+  // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  // HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 
   ptr = ((volatile uint32_t*) ((0x40020400) + (0x00U)));   // *ptr = 0x280
   *ptr |= 1;
 
-	for(;;)
-	{
-		// HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+  for(;;)
+  {
+    // HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
 
-		uint32_t odr = *((uint32_t*)0x40020414);
-	  *((uint32_t*)0x40020418) = ((odr & 1) << 16) | (~odr & 1);
+    uint32_t odr = *((uint32_t*)0x40020414);
+    *((uint32_t*)0x40020418) = ((odr & 1) << 16) | (~odr & 1);
 
-	    for (uint32_t i = 0; i < 1000000; i++){}
-	}
+      for (uint32_t i = 0; i < 1000000; i++){}
+  }
 #endif
 
 #if 0
-	// Minimal LED blinking code. C, HAL, busy loop.
+  // Minimal LED blinking code. C, HAL, busy loop.
 
-	// #define LD1_GPIO_Port GPIOB
-	// #define LD1_Pin GPIO_PIN_0
+  // #define LD1_GPIO_Port GPIOB
+  // #define LD1_Pin GPIO_PIN_0
 
-	__HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
   GPIO_InitStruct.Pin = LD1_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 
-	for(;;)
-	{
-		HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+  for(;;)
+  {
+    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
 
-	  for (uint32_t i = 0; i < 1000000; i++){}
-	}
+    for (uint32_t i = 0; i < 1000000; i++){}
+  }
 #endif
 
 #endif
