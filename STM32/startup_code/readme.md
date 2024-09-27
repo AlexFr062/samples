@@ -47,7 +47,7 @@ Open file `Core/Scr/main.c`, add this code to the endless loop in the `main` fun
     HAL_Delay(500);	  
 ```
 
-Build and run the project: LED1 is blinking. Later in the article, I will call this project state as **Default state**. At any time, when necessary, it is possible to return to this ***Default state** by activating the Assembly startup file.
+Build and run the project: LED1 is blinking. Later in the article, I will call this project state as **Default state**. At any time, when necessary, it is possible to return to this **Default state** by activating the Assembly startup file.
 
 ## Replacing Assembly startup file with C file
 
@@ -127,7 +127,7 @@ void Bus_Fault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void Usage_Fault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 ```
 
-Some of them may be implemented somewhere else in the project. If not, the handler is mapped to `default_handler`. Finally, define the vector table:
+Some of them may be implemented somewhere else in the project. If not, the handler is mapped to `Default_Handler`. Finally, define the vector table:
 
 ```
 uint32_t g_pfnVectors[] __attribute__((section(".isr_vector"))) =
@@ -181,13 +181,13 @@ Initialized global variable `g_data1` belongs to `.data` section, uninitialized 
     asm ("ldr r3, =_ebss");     // 0x20000024    r3 = &_sbss    SRAM
     asm ("ldr r4, =_sidata");   // 0x80000b8     r4 = &_sidata  flash
 ```
-Upon receiving the Reset interrupt, STM32 board loads an executable from its flash memory to SRAM, and calls `Reset_Handler` function. Flash memory is mapped to the virtial address `0x8000000` in the process, and linker label `_sidata` is placed in the beginning of initialized variables section in the flash memory.
+Upon receiving the Reset interrupt, STM32 board loads an executable from its flash memory, and calls `Reset_Handler` function. Flash memory is mapped to the virtial address `0x8000000` in the process, and linker label `_sidata` is placed in the beginning of initialized variables section in the flash memory.
 
 Assembly `Reset_Handler` code copies `.data` section from flash ro SRAM, and zeroes `.bss` section. It works like the following C pseudo-code:
 
 ```
 memcpy(&_sdata, &_sidata, &_edata - &_sdata);
-memset(&sbss, 0, &_ebss - &_sbss);
+memset(&_sbss, 0, &_ebss - &_sbss);
 ```
 This is Assembly `Reset_Handler` code with my C-style comments:
 ```
@@ -272,7 +272,7 @@ Run the program - LED1 is not blinking.
 
 ## How to get the main function working
 
-Using debugger, we can see that the program crashes in our `Default_handler` is called. Comparing two `Reset_handler` functions, I see the following Assembly lines:
+Using debugger, we can see that the program crashes and our `Default_handler` is called. Comparing two `Reset_handler` functions, I see the following Assembly lines:
 
 ```
 bl  SystemInit         /* in the beginning*/
@@ -295,9 +295,9 @@ void Reset_Handler()
     main();
 }
 ```
-They are executed successfully, but the program still crashes. Currently it crashes on the first `HAL_Delay` call, but don't try to replace it with a busy loop - it wil crash somewhere else.
+They are executed successfully, but the program still crashes. Currently it crashes on the first `HAL_Delay` call, but don't try to replace it with a busy loop - it will crash somewhere else.
 
-Finally, to get all functions working, it is necessary to fill the whole interrupt vector `g_pfnVectors`. Copy all forward declarations for interrupt handlers from Assembly startup file, translating them from Assembly to C. Keep the same function names, since they may be overridden somewhere else in the project. Fill interrupt vector, including 0 placeholders, ensure that is has the same length in C. Build and run the program, now it should work. Led is blinking.
+Finally, to get all functions working, it is necessary to fill the whole interrupt vector `g_pfnVectors`. Copy all forward declarations for interrupt handlers from Assembly startup file, translating them from Assembly to C. Keep the same function names, since they may be overridden somewhere else in the project. Fill interrupt vector, including 0 placeholders, ensure that is has the same length in C. Build and run the program, now it should work. LED is blinking.
 
 C startup file for NUCLEO-F429ZI in it's final state can be found in this repository: [startup.c](startup.c).
 
@@ -393,16 +393,17 @@ Deactivate `startup.c` and activate Assembly startup file. Place the following c
 ```
 This code contains a busy loop instead of `HAL_Delay`. This is done intentionally, because `HAL_Delay` requires clock interrupt, and I want to have really minimal code. Build and run the program - LED1 is blinking. 
 
+
 ### Minimal LED blinking code, C with direct memory operations
 
-HAL functions, such as `with direct memory operations`, `HAL_GPIO_Init`, `HAL_GPIO_TogglePin` actually read-write some information to memory-mapped registers. Required memory addresses can be found both by investigationj the HAL code, and reading [MCU reference](https://www.st.com/resource/en/datasheet/stm32f427vg.pdf).
+HAL functions, such as `__HAL_RCC_GPIOB_CLK_ENABLE`, `HAL_GPIO_Init`, `HAL_GPIO_TogglePin` actually read/write some information to memory-mapped registers. Required memory addresses can be found both by investigationj the HAL code, and reading [MCU reference](https://www.st.com/resource/en/datasheet/stm32f427vg.pdf).
 
 For example, open MCU reference, `Table 13. STM32F427xx and STM32F429xx register boundary addresses`. Here we can find:
 ```
 AHB1  0x4002 3800 - 0x4002 3BFF RCC
       0x4002 0400 - 0x4002 07FF GPIOB
 ```
-To enable peripheral clock, we need also `RCC_TypeDef` structre and its `AHB1ENR` member:
+To enable peripheral clock, we need also `RCC_TypeDef` structure and its `AHB1ENR` member:
 
 ```
 typedef struct
@@ -435,12 +436,14 @@ So, place this code to the beginning if `main.c` and test it. Result should be t
     // Blink with busy loop
     for(;;)
     {
-	      // HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
-	      uint32_t odr = *((uint32_t*)0x40020414);
+          // HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+          uint32_t odr = *((uint32_t*)0x40020414);
         *((uint32_t*)0x40020418) = ((odr & 1) << 16) | (~odr & 1);
         for (uint32_t i = 0; i < 1000000; i++){}
     }
 ```
+
+C main file for NUCLEO-F429ZI with these code fragments can be found in this repository: [main.c](main.c).
 
 ### Minimal LED blinking code, Assembly
 
@@ -498,4 +501,4 @@ Pause2:
     b LedBlinkingLoop
 ```
 
-This code works without stack pointer, and even without interrupt vector. `g_pfnVectors` definition can be removed fron the startup Assembly file, and the program is still working. So, this is probably minimal possible LED blinking code.
+This code works without stack pointer, and even without interrupt vector. `g_pfnVectors` definition can be removed from the startup Assembly file, and the program is still working. So, this is probably minimal possible LED blinking code.
