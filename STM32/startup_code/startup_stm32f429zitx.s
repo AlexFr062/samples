@@ -59,10 +59,10 @@ defined in linker script */
   .type  Reset_Handler, %function
 Reset_Handler: 
 
-    // Uncomment for default Reset_Handler
-    b ResetHandlerStart
+  // Uncomment for default Reset_Handler. Comment to run endless LED blinking code.
+  b ResetHandlerStart
 
-    // Minimal LED blinking code. See the article, Minimal LED blinking code.
+  // Minimal LED blinking code. See the article, Minimal LED blinking code.
 
 	// volatile uint32_t* ptr = ((volatile uint32_t*) ((((0x40000000U) + 0x20000U) + 0x3800U) + (0x30U)));
 	// *ptr |= 2;
@@ -70,47 +70,47 @@ Reset_Handler:
 	ldr r3, =0x40023830
 	ldr r4, [r3]
 	orr.w   r4, r4, #2
-    str r4, [r3]
+  str r4, [r3]
 
 	// dummy = *ptr;
 	// dummy = *ptr;
-    ldr r4, [r3]
-    ldr r4, [r3]
+  ldr r4, [r3]
+  ldr r4, [r3]
 
-    // ptr = ((volatile uint32_t*) ((0x40020400) + (0x00U)));
-    // *ptr |= 1;
+  // ptr = ((volatile uint32_t*) ((0x40020400) + (0x00U)));
+  // *ptr |= 1;
 
-    ldr r3, =0x40020400
-    ldr r4, [r3]
-    orr.w   r4, r4, #1
-    str r4, [r3]
+  ldr r3, =0x40020400
+  ldr r4, [r3]
+  orr.w   r4, r4, #1
+  str r4, [r3]
 
-    ldr r6, =#1000000
+  ldr r6, =#1000000
 
 LedBlinkingLoop:
-    // LED1 on
+  // LED1 on
 	ldr r3, =0x40020414
 	ldr r4, =#1
 	str r4, [r3]
 
-    // Busy loop
-    ldr r5, =0x0
+  // Busy loop
+  ldr r5, =0x0
 Pause1:
-    add r5, r5, #1
-    cmp r5, r6
-    blo Pause1
+  add r5, r5, #1
+  cmp r5, r6
+  blo Pause1
 
-    // LED1 off
+  // LED1 off
 	ldr r3, =0x40020414
 	ldr r4, =0x10000
 	str r4, [r3]
 
-    // Busy loop
-    ldr r5, =0x0
+  // Busy loop
+  ldr r5, =0x0
 Pause2:
-    add r5, r5, #1
-    cmp r5, r6
-    blo Pause2
+  add r5, r5, #1
+  cmp r5, r6
+  blo Pause2
 
 	b LedBlinkingLoop
 

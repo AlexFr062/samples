@@ -415,9 +415,9 @@ typedef struct
 
 ```
 
-The process of learning an STM MCU documents is described with mode details in [STM32 without CubeIDE](https://kleinembedded.com/stm32-without-cubeide-part-1-the-bare-necessities/).
+The process of learning an STM MCU documents is described with more details in [STM32 without CubeIDE](https://kleinembedded.com/stm32-without-cubeide-part-1-the-bare-necessities/).
 
-So, place this code to the beginning if `main.c` and test it. Result should be the same, as in the previous test:
+So, place this code to the beginning of `main.c` and test it. Result should be the same, as in the previous test:
 
 ```
     //  __HAL_RCC_GPIOB_CLK_ENABLE();

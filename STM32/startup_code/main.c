@@ -74,10 +74,10 @@ int main(void)
 
 
 	// See STM32WithoutCubeIDE, Project/Blink.
-    //
-    //
-    // Enable the peripheral clock for GPIO port B
-    //  __HAL_RCC_GPIOB_CLK_ENABLE();
+  //
+  //
+  // Enable the peripheral clock for GPIO port B
+  //  __HAL_RCC_GPIOB_CLK_ENABLE();
 
 	volatile uint32_t* ptr = ((volatile uint32_t*) ((((0x40000000U) + 0x20000U) + 0x3800U) + (0x30U)));
 	*ptr |= 2;
@@ -97,15 +97,15 @@ int main(void)
 	// HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 
-    ptr = ((volatile uint32_t*) ((0x40020400) + (0x00U)));   // *ptr = 0x280
-    *ptr |= 1;
+  ptr = ((volatile uint32_t*) ((0x40020400) + (0x00U)));   // *ptr = 0x280
+  *ptr |= 1;
 
 	for(;;)
 	{
 		// HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
 
 		uint32_t odr = *((uint32_t*)0x40020414);
-	    *((uint32_t*)0x40020418) = ((odr & 1) << 16) | (~odr & 1);
+	  *((uint32_t*)0x40020418) = ((odr & 1) << 16) | (~odr & 1);
 
 	    for (uint32_t i = 0; i < 1000000; i++){}
 	}
@@ -120,7 +120,7 @@ int main(void)
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
-    GPIO_InitStruct.Pin = LD1_Pin;
+  GPIO_InitStruct.Pin = LD1_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
@@ -129,7 +129,7 @@ int main(void)
 	{
 		HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
 
-	    for (uint32_t i = 0; i < 1000000; i++){}
+	  for (uint32_t i = 0; i < 1000000; i++){}
 	}
 #endif
 
