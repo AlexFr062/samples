@@ -14,6 +14,8 @@
 
 - [Klein Embedded: STM32 without CubeIDE](https://kleinembedded.com/stm32-without-cubeide-part-1-the-bare-necessities/)
 - [ARM® Assembly rererence](https://developer.arm.com/documentation/dui0802/latest/)
+- [NUCLEO-F429ZI](https://www.st.com/en/evaluation-tools/nucleo-f429zi.html)
+- [STM32F427xx STM32F429xx](https://www.st.com/resource/en/datasheet/stm32f427vg.pdf)
 
 Working environment:
 - Windows 11.
@@ -351,3 +353,149 @@ Click Download.
 ```
 
 Disconnect, reset the board. The program must work.
+
+## Minimal LED blinking code
+
+What is minimal LED blinking code, that can be written in C and Assembly? Let's write it using 3 ways:
+- C with HAL (Hardware Access Layer).
+- C with direct memory operations.
+- Assembly.
+
+Writing this code, we can see, how [MCU reference](https://www.st.com/resource/en/datasheet/stm32f427vg.pdf) is translated to high-level HAL definitions.
+
+### Minimal LED blinking code, C and HAL
+
+LED1 definitions from CubeMX-generated code are the following:
+
+```
+#define LD1_Pin GPIO_PIN_0
+#define LD1_GPIO_Port GPIOB
+```
+
+So, we are working with GPIO port B, pin 0.
+
+Deactivate `startup.c` and activate Assembly startup file. Place the following code to the beginning of `main` function in `main.c`:
+
+```
+	    __HAL_RCC_GPIOB_CLK_ENABLE();                // Enable Peripheral Clock for GPIOB
+
+    GPIO_InitTypeDef GPIO_InitStruct = {0};      // Configure pin 0
+    PIO_InitStruct.Pin = LD1_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    // Blink with busy loop
+    for(;;)
+    {
+        HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+        for (uint32_t i = 0; i < 1000000; i++){}
+    }
+```
+This code contains a busy loop instead of `HAL_Delay`. This is done intentionally, because `HAL_Delay` requires clock interrupt, and I want to have really minimal code. Build and run the program - LED1 is blinking. 
+
+### Minimal LED blinking code, C with direct memory operations
+
+HAL functions, such as `with direct memory operations`, `HAL_GPIO_Init`, `HAL_GPIO_TogglePin` actually read-write some information to memory-mapped registers. Required memory addresses can be found both by investigationj the HAL code, and reading [MCU reference](https://www.st.com/resource/en/datasheet/stm32f427vg.pdf).
+
+For example, open MCU reference, `Table 13. STM32F427xx and STM32F429xx register boundary addresses`. Here we can find:
+```
+AHB1  0x4002 3800 - 0x4002 3BFF RCC
+      0x4002 0400 - 0x4002 07FF GPIOB
+```
+To enable peripheral clock, we need also `RCC_TypeDef` structre and its `AHB1ENR` member:
+
+```
+typedef struct
+{
+  ...
+  __IO uint32_t AHB1ENR;       /*!< RCC AHB1 peripheral clock register,                          Address offset: 0x30 */
+  ...
+} RCC_TypeDef;
+
+```
+
+The process of learning and STM MCU documents is described with mode details in [STM32 without CubeIDE](https://kleinembedded.com/stm32-without-cubeide-part-1-the-bare-necessities/).
+
+So, place this code to the beginning if `main.c` and test it. Result should be the same, as in the previous test:
+
+```
+    //  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+    volatile uint32_t* ptr = ((volatile uint32_t*) ((((0x40000000U) + 0x20000U) + 0x3800U) + (0x30U)));
+    *ptr |= 2;
+
+    volatile uint32_t dummy;
+    dummy = *ptr;
+    dummy;               // prevent compiler warning
+
+    // Set pin PB0 as output pin.
+    ptr = ((volatile uint32_t*) ((0x40020400) + (0x00U)));   // *ptr = 0x280
+    *ptr |= 1;
+
+    // Blink with busy loop
+    for(;;)
+    {
+	    // HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+	    uint32_t odr = *((uint32_t*)0x40020414);
+        *((uint32_t*)0x40020418) = ((odr & 1) << 16) | (~odr & 1);
+        for (uint32_t i = 0; i < 1000000; i++){}
+    }
+```
+
+### Minimal LED blinking code, Assembly
+
+The last C code fragment can be translated to Assembly. Place the following code it to the beginning of `Reset_Handler` in Assembly start file. `HAL_GPIO_TogglePin` translation is simplified, but works for this specific case.
+
+```
+    // volatile uint32_t* ptr = ((volatile uint32_t*) ((((0x40000000U) + 0x20000U) + 0x3800U) + (0x30U)));
+    // *ptr |= 2;
+
+    ldr r3, =0x40023830
+    ldr r4, [r3]
+    orr.w   r4, r4, #2
+    str r4, [r3]
+
+    // dummy = *ptr;
+    // dummy = *ptr;
+    ldr r4, [r3]
+    ldr r4, [r3]
+
+    // ptr = ((volatile uint32_t*) ((0x40020400) + (0x00U)));
+    // *ptr |= 1;
+
+    ldr r3, =0x40020400
+    ldr r4, [r3]
+    orr.w   r4, r4, #1
+    str r4, [r3]
+
+    ldr r6, =#1000000
+
+LedBlinkingLoop:
+    // LED1 on
+    ldr r3, =0x40020414
+    ldr r4, =#1
+    str r4, [r3]
+
+    // Busy loop
+    ldr r5, =0x0
+Pause1:
+    add r5, r5, #1
+    cmp r5, r6
+    blo Pause1
+
+    // LED1 off
+    ldr r3, =0x40020414
+    ldr r4, =0x10000
+    str r4, [r3]
+
+    // Busy loop
+    ldr r5, =0x0
+Pause2:
+    add r5, r5, #1
+    cmp r5, r6
+    blo Pause2
+
+    b LedBlinkingLoop
+```
+
+This code works without stack pointer, and even without interrupt vector. `g_pfnVectors` definition can be removed fron the startup Assembly file, and the program is still working. So, this is probably minimal possible LED blinking code.
