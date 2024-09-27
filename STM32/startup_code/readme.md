@@ -377,7 +377,7 @@ So, we are working with GPIO port B, pin 0.
 Deactivate `startup.c` and activate Assembly startup file. Place the following code to the beginning of `main` function in `main.c`:
 
 ```
-	    __HAL_RCC_GPIOB_CLK_ENABLE();                // Enable Peripheral Clock for GPIOB
+    __HAL_RCC_GPIOB_CLK_ENABLE();                // Enable Peripheral Clock for GPIOB
 
     GPIO_InitTypeDef GPIO_InitStruct = {0};      // Configure pin 0
     PIO_InitStruct.Pin = LD1_Pin;
@@ -414,7 +414,7 @@ typedef struct
 
 ```
 
-The process of learning and STM MCU documents is described with mode details in [STM32 without CubeIDE](https://kleinembedded.com/stm32-without-cubeide-part-1-the-bare-necessities/).
+The process of learning an STM MCU documents is described with mode details in [STM32 without CubeIDE](https://kleinembedded.com/stm32-without-cubeide-part-1-the-bare-necessities/).
 
 So, place this code to the beginning if `main.c` and test it. Result should be the same, as in the previous test:
 
@@ -435,8 +435,8 @@ So, place this code to the beginning if `main.c` and test it. Result should be t
     // Blink with busy loop
     for(;;)
     {
-	    // HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
-	    uint32_t odr = *((uint32_t*)0x40020414);
+	      // HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+	      uint32_t odr = *((uint32_t*)0x40020414);
         *((uint32_t*)0x40020418) = ((odr & 1) << 16) | (~odr & 1);
         for (uint32_t i = 0; i < 1000000; i++){}
     }
