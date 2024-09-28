@@ -16,7 +16,6 @@ using namespace std::chrono_literals;           // for this_thread::sleep_for
 void test_notification();
 void test_notification_single();
 void test_notification_data();
-void test_notification_single_data();
 void test_notification_data_v();
 
 std::mutex sync_mutex;          // for sync_print
@@ -26,7 +25,6 @@ int main()
     test_notification();
     test_notification_single();
     test_notification_data();
-    test_notification_single_data();
     test_notification_data_v();
 
     return 0;
@@ -161,126 +159,12 @@ void test_notification_data()
     t.join();
 }
 
-// notification_data contains queued data in std::queue container.
-// What if we want to manage our own thread-safe data, and still need some kind of message queue functionality?
-//
-// This function works like test_notification_data, but keeps the data in std::vector, and uses notification_single
-// for cross-thread notification.
-//
-// Expected output:
-// 
-// send string 1
-// send string 2
-// send string 3
-// wait succeeded
-// string 1
-// string 2
-// string 3
-// send string  4
-// wait succeeded
-// send string  5
-// send stop request
-// string 4
-// string 5
-//
-// Number of "wait succeeded" messages can vary.
-// 
-// Note: See better solution in test_notification_data_v.
-//
-void test_notification_single_data()
-{
-    sync_print();
-    sync_print(__FUNCTION__);
-
-
-    notification_single nt;
-    std::vector<message> messages;
-    std::mutex msg_mutex;
-
-    const int count1 = 3;
-    const int count2 = 2;
-    int message_id{};
-
-
-    for (int i = 0; i < count1; ++i)
-    {
-        sync_print("send string", ++message_id);
-
-        // Typical way to send a message:
-        // lock
-        // add new message to vector
-        // unlock
-        // post notification.
-
-        {
-            std::lock_guard<std::mutex> lock(msg_mutex);
-            messages.push_back(message{ std::string("string ") + std::to_string(message_id), command::execute });
-        }
-
-        nt.set();
-    }
-
-    std::thread t([=, &nt, &msg_mutex, &messages]() 
-    {
-        for(;;)
-        {
-            std::vector<message> v;
-            nt.wait();
-
-            sync_print("wait succeeded");
-
-            // Typical way to read all available messages:
-            // lock
-            // move to loacl vector, restore origimal vector state
-            // unlock
-            // handle all messages locally, when mutex is free.
-            
-            {
-                std::unique_lock<std::mutex> lock(msg_mutex);
-                v = std::move(messages);    // v can be empty here
-                messages.clear();           // restore vector after moving from
-            }
-
-            for (const auto& msg : v)
-            {
-                if (msg.cmd == command::stop) return;
-                sync_print(msg.str);
-            }
-        }
-    });
-
-    std::this_thread::sleep_for(100ms);      // to make output more interesting
-
-    for (int i = 0; i < count2; ++i)
-    {
-        sync_print("send string ", ++message_id);
-
-        {
-            std::lock_guard<std::mutex> lock(msg_mutex);
-            messages.push_back(message{ std::string("string ") + std::to_string(message_id), command::execute });
-        }
-
-        nt.set();
-    }
-
-    sync_print("send stop request");
-
-    {
-        std::lock_guard<std::mutex> lock(msg_mutex);
-        messages.push_back(message{ "", command::stop });
-    }
-
-    nt.set();
-
-    t.join();
-}
 
 // By changing the notification container type, wait return type and wait conditions,
 // it is possible to make new notification classes for specific purposes.
 // For example, notification_data<T> uses std::queue internally.
-// For better perfomance I want to use std::vector, like in the previous function
-// test_notification_single_data. The problem in previous function is obvious:
-// two mutexts, when I actually need one.
+// For better perfomance I want to use std::vector. The whole vector is returned
+// by single wait, so N set calls may result from 1 to N wait calls/
 // 
 // So, let's write new notification_data_v class, which keeps the data in vector,
 // and returns all available data from wait function at once.
