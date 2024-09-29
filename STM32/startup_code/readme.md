@@ -181,7 +181,7 @@ Initialized global variable `g_data1` belongs to `.data` section, uninitialized 
     asm ("ldr r3, =_ebss");     // 0x20000024    r3 = &_sbss    SRAM
     asm ("ldr r4, =_sidata");   // 0x80000b8     r4 = &_sidata  flash
 ```
-Upon receiving the Reset interrupt, STM32 board loads an executable from its flash memory, and calls `Reset_Handler` function. Flash memory is mapped to the virtial address `0x8000000` in the process, and linker label `_sidata` is placed in the beginning of initialized variables section in the flash memory.
+Upon receiving the Reset interrupt, STM32 board loads an executable from its flash memory, and calls `Reset_Handler` function. Flash memory is mapped to the virtiual address `0x8000000` in the process, and linker label `_sidata` is placed in the beginning of initialized variables section in the flash memory.
 
 Assembly `Reset_Handler` code copies `.data` section from flash ro SRAM, and zeroes `.bss` section. It works like the following C pseudo-code:
 
@@ -436,8 +436,8 @@ So, place this code to the beginning of `main.c` and test it. Result should be t
     // Blink with busy loop
     for(;;)
     {
-          // HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
-          uint32_t odr = *((uint32_t*)0x40020414);
+        // HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+        uint32_t odr = *((uint32_t*)0x40020414);
         *((uint32_t*)0x40020418) = ((odr & 1) << 16) | (~odr & 1);
         for (uint32_t i = 0; i < 1000000; i++){}
     }
