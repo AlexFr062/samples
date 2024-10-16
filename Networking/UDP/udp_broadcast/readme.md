@@ -125,7 +125,7 @@ Finder started, Port 8
 Device: 192.168.0.10 255.255.255.0  Host: 192.168.0.1  [Ethernet 1]
 ```
 
-Change host IP address to another subnet, for example, ``192.168.1.1`. Or even, select DHCP instead of static IP. Run the program again:
+Change host IP address to another subnet, for example, `192.168.1.1`. Or even, select DHCP instead of static IP. Run the program again:
 
 ```
 Finder started, Port 8
