@@ -4,6 +4,7 @@
 
 #include "sync_print.h"
 #include "notification.h"
+#include "notification_cpp20.h"
 #include "notification_single.h"
 #include "notification_data.h"
 #include "notification_data_v.h"
@@ -30,6 +31,8 @@ int main()
     return 0;
 }
 
+#define USE_CPP20       // comment to use notification class
+
 // Expected output:
 // wait succeded
 // wait succeded
@@ -42,7 +45,11 @@ void test_notification()
     sync_print();
     sync_print(__FUNCTION__);
 
+#ifdef USE_CPP20
+    notification_20 nt;
+#else
     notification nt;
+#endif
     const int count1 = 3;
     const int count2 = 2;
 
