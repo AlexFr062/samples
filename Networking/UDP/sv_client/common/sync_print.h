@@ -26,3 +26,10 @@ void sync_print(Args&&... args)
         std::cout << s.str() << std::endl;
     }
 }
+
+
+// Note: In C++20 it is possible to use osyncstream class for synchronized outpur, so sync_print is not needed:
+//
+// #include <syncstream>
+// ...
+// std::osyncstream(std::cout) << "This output is synchronized" << std::endl;
