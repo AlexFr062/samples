@@ -65,3 +65,47 @@ private:
     std::condition_variable cond_variable;
 
 };
+
+/*
+C++ 20. This class can be implemented using std::counting_semaphore -
+according to documentation, it must be faster.
+
+#include <semaphore>
+...
+
+class notification
+{
+public:
+    // Post message
+    void set()
+    {
+        sm.release();
+    }
+
+    // Wait for message
+    void wait()
+    {
+        sm.acquire();
+    }
+
+    // Wait for message with timeout.
+    // Returns: true - wait successful, false - timeout.
+    bool wait_for(int ms)
+    {
+        return sm.try_acquire_for(std::chrono::milliseconds(ms));
+    }
+
+    void reset()
+    {
+        while (sm.try_acquire_for(std::chrono::milliseconds(0))) {}
+    }
+
+private:
+    std::counting_semaphore<> sm{ 0 };
+};
+*/
+
+
+
+
+*/
