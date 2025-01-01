@@ -29,7 +29,7 @@ void sync_print(Args&&... args)
     }
 }
 
-// Note: In C++20 it is possible to use osyncstream class for synchronized outpur, so sync_print is not needed:
+// Note: In C++20 it is possible to use osyncstream class for synchronized output, so sync_print is not needed:
 //
 // #include <syncstream>
 // ...
