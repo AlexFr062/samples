@@ -28,7 +28,7 @@ Upon startup, device reads its IP address from flash memory. Device contains als
 
 Some user changes the default IP address to something else, probably, with another subnet, and then forgets this new address. Now this user cannot connect to device. 
 
-One possible solution maybe Factory Reset button, which returns the device to default state, including default IP address. But additional button increases our device cost. Any other idea? UDP broadcast can help in this case. Broadcasted packets can move between a network nodes, even when these nodes don't belong to the same subnet.
+One possible solution may be Factory Reset button, which returns the device to default state, including default IP address. But additional button increases our device cost. Any other idea? UDP broadcast can help in this case. Broadcasted packets can move between a network nodes, even when these nodes don't belong to the same subnet.
 
 We can send Factory Reset request to the device. Another approach: host sends Device Detection packets. Upon receiving such packet, device replies with Device Information packet, which contains current device IP. 
 
